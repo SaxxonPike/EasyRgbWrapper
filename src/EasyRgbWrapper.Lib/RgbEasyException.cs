@@ -8,5 +8,9 @@ namespace EasyRgbWrapper.Lib
         public RgbEasyException(RGBERROR error) : base($"An RGBEasy error occurred: {error}")
         {
         }
+
+        public RgbEasyException(string message) : base(message)
+        {
+        }
     }
 }

@@ -1,8 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net461</TargetFrameworks>
+    <OutputType>exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EasyRgbWrapper.Lib\EasyRgbWrapper.Lib.csproj" />
   </ItemGroup>
 </Project>

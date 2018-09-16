@@ -5,6 +5,11 @@ namespace EasyRgbWrapper.Lib
 {
     public interface IRgbEasyCapture : IDisposable
     {
+        event EventHandler<RgbEasyFrameCapturedEventArgs> FrameCaptured;
+        event EventHandler<RgbEasyModeChangedEventArgs> ModeChanged;
+        
+        bool EnableFrameCapturedEvent { set; }
+        bool EnableModeChangedEvent { set; }
         int HorizontalScaleMinimum { get; }
         int HorizontalScaleMaximum { get; }
         int HorizontalScaleDefault { get; }
@@ -20,7 +25,7 @@ namespace EasyRgbWrapper.Lib
         int CaptureWidthMinimum { get; }
         int CaptureWidthMaximum { get; }
         int CaptureWidthDefault { get; }
-        int CaptureWidth { get; }
+        int CaptureWidth { get; set; }
         int CaptureHeightMinimum { get; }
         int CaptureHeightMaximum { get; }
         int CaptureHeightDefault { get; }
@@ -76,5 +81,7 @@ namespace EasyRgbWrapper.Lib
         void Reset();
         int Input { get; set; }
         IntPtr Window { get; set; }
+        void Start();
+        void Stop();
     }
 }

@@ -5,6 +5,9 @@ namespace EasyRgbWrapper.Lib
 {
     public class RgbEasyCapture : IRgbEasyCapture
     {
+        public event EventHandler<RgbEasyFrameCapturedEventArgs> FrameCaptured;
+        public event EventHandler<RgbEasyModeChangedEventArgs> ModeChanged;
+
         private readonly IntPtr _handle;
 
         public RgbEasyCapture(int inputIndex)
@@ -13,6 +16,34 @@ namespace EasyRgbWrapper.Lib
             if (error != RGBERROR.NO_ERROR)
                 throw new RgbEasyException(error);
             _handle = handle;
+        }
+
+        private void OnModeChanged(IntPtr hwnd, IntPtr hrgb, ref RGBMODECHANGEDINFO modechangedinfo, IntPtr userdata) => 
+            ModeChanged?.Invoke(this, 
+                new RgbEasyModeChangedEventArgs(hwnd, this, modechangedinfo, userdata));
+
+        private void OnFrameCaptured(IntPtr hwnd, IntPtr hrgb, ref BITMAPINFOHEADER bitmapinfo, IntPtr bitmapbits, IntPtr userdata) =>
+            FrameCaptured?.Invoke(this, 
+                new RgbEasyFrameCapturedEventArgs(hwnd, this, bitmapinfo, bitmapbits, userdata));
+
+        public bool EnableFrameCapturedEvent
+        {
+            set
+            {
+                var error = RGB.SetFrameCapturedFn(_handle, value ? OnFrameCaptured : (RGBFRAMECAPTUREDFN)null, IntPtr.Zero);
+                if (error != RGBERROR.NO_ERROR)
+                    throw new RgbEasyException(error);
+            }
+        }
+
+        public bool EnableModeChangedEvent
+        {
+            set
+            {
+                var error = RGB.SetModeChangedFn(_handle, value ? OnModeChanged : (RGBMODECHANGEDFN)null, IntPtr.Zero);
+                if (error != RGBERROR.NO_ERROR)
+                    throw new RgbEasyException(error);
+            }
         }
 
         public int HorizontalScaleMinimum
@@ -647,7 +678,7 @@ namespace EasyRgbWrapper.Lib
             if (error != RGBERROR.NO_ERROR)
                 throw new RgbEasyException(error);
         }
-        
+
         public int FrameDroppingMinimum
         {
             get
@@ -697,7 +728,7 @@ namespace EasyRgbWrapper.Lib
                     throw new RgbEasyException(error);
             }
         }
-        
+
         public int FrameRate
         {
             get
@@ -708,7 +739,7 @@ namespace EasyRgbWrapper.Lib
                 return (int) result;
             }
         }
-        
+
         public RgbEasyCropping CroppingMinimum
         {
             get
@@ -761,7 +792,8 @@ namespace EasyRgbWrapper.Lib
 
         public void TestCropping(RgbEasyCropping cropping)
         {
-            var error = RGB.TestCropping(_handle, cropping.Top, cropping.Left, (uint) cropping.Width, (uint) cropping.Height);
+            var error = RGB.TestCropping(_handle, cropping.Top, cropping.Left, (uint) cropping.Width,
+                (uint) cropping.Height);
             if (error != RGBERROR.NO_ERROR)
                 throw new RgbEasyException(error);
         }
@@ -782,7 +814,7 @@ namespace EasyRgbWrapper.Lib
                     throw new RgbEasyException(error);
             }
         }
-        
+
         public DEINTERLACE Deinterlace
         {
             get
@@ -811,7 +843,7 @@ namespace EasyRgbWrapper.Lib
         {
             var error = RGB.ResumeCapture(_handle);
             if (error != RGBERROR.NO_ERROR)
-                throw new RgbEasyException(error);            
+                throw new RgbEasyException(error);
         }
 
         public CAPTURESTATE CaptureState
@@ -863,7 +895,7 @@ namespace EasyRgbWrapper.Lib
                     throw new RgbEasyException(error);
             }
         }
-        
+
         // TODO: next item is RGBSaveCurrentFrame
 
         public void DetectInput()
@@ -914,11 +946,29 @@ namespace EasyRgbWrapper.Lib
             }
         }
 
+        public void Start()
+        {
+            var error = RGB.StartCapture(_handle);
+            if (error != RGBERROR.NO_ERROR)
+                throw new RgbEasyException(error);
+        }
+
+        public void Stop()
+        {
+            var error = RGB.StopCapture(_handle);
+            if (error != RGBERROR.NO_ERROR)
+                throw new RgbEasyException(error);
+        }
+
 
         public void Dispose()
         {
             if (_handle != IntPtr.Zero)
+            {
+                RGB.StopCapture(_handle);
+                RGB.SetFrameCapturedFn(_handle, null, IntPtr.Zero);
                 RGB.CloseInput(_handle);
+            }
         }
     }
 }

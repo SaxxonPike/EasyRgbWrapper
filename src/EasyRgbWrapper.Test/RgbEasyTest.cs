@@ -1,4 +1,8 @@
 using System;
+using System.Drawing;
+using System.Linq;
+using System.Threading;
+using EasyRgbWrapper.Gui.Controls;
 using EasyRgbWrapper.Lib;
 using NUnit.Framework;
 
@@ -10,9 +14,13 @@ namespace EasyRgbWrapper.Test
         [Test]
         public void Test1()
         {
+            using (var formService = new FormService())
             using (var context = new RgbEasyContext())
             {
                 var inputs = context.Inputs;
+                var form = formService.Create();
+                form.Size = new Size(640, 480);
+                form.Show();
 
                 foreach (var input in inputs)
                 {
