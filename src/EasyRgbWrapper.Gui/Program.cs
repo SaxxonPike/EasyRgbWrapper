@@ -21,10 +21,10 @@ namespace EasyRgbWrapper.Gui
                 {
                     capture.ModeChanged += CaptureOnModeChanged;
                     capture.EnableModeChangedEvent = true;
-                    capture.CaptureWidth = 640;
-                    capture.HorizontalScale = 800;
-                    capture.HorizontalPosition = 142;
-                    form.ClientSize = new Size(1024, 768);
+//                    capture.CaptureWidth = 640;
+//                    capture.HorizontalScale = 800;
+//                    capture.HorizontalPosition = 142;
+                    form.ClientSize = new Size(1280, 960);
                     var picBox = new PictureBox {Dock = DockStyle.Fill};
                     form.Controls.Add(picBox);
                     form.Text = $"ligma version negative 2";
@@ -39,7 +39,8 @@ namespace EasyRgbWrapper.Gui
 
         private static void CaptureOnModeChanged(object sender, RgbEasyModeChangedEventArgs e)
         {
-            Debug.WriteLine($"Mode changed: totalLines={e.Info.TotalNumberOfLines} vRate={e.Info.LineRate} hRate{e.Info.RefreshRate}");
+            Debug.WriteLine($"Mode changed: totalLines={e.Info.TotalNumberOfLines} vRate={e.Info.LineRate} hRate={e.Info.RefreshRate}");
+            Debug.WriteLine($"Capture: hPos={e.Capture.HorizontalPosition} hScale={e.Capture.HorizontalScale} vPos={e.Capture.VerticalPosition}");
         }
     }
 }
