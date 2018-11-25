@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -13,34 +14,65 @@ namespace EasyRgbWrapper.Gui
         private static void Main(string[] args)
         {
             using (var formService = new FormService())
-            using (var form = formService.Create())
             using (var context = new RgbEasyContext())
             {
-                var input = context.ConnectedInputs.First();
-                using (var capture = context.ConnectedInputs.First().OpenCapture())
+                var inputs = context.Inputs.ToList();
+                var forms = new List<Form>();
+                
+                foreach (var input in inputs)
                 {
+                    var form = formService.Create();
+                    form.FormBorderStyle = FormBorderStyle.FixedDialog;
+                    form.MinimizeBox = true;
+                    form.MaximizeBox = false;
+                    var capture = input.OpenCapture();
                     capture.ModeChanged += CaptureOnModeChanged;
                     capture.EnableModeChangedEvent = true;
-//                    capture.CaptureWidth = 640;
-//                    capture.HorizontalScale = 800;
-//                    capture.HorizontalPosition = 142;
-                    form.ClientSize = new Size(1280, 960);
-                    var picBox = new PictureBox {Dock = DockStyle.Fill};
-                    form.Controls.Add(picBox);
-                    form.Text = $"ligma version negative 2";
+                    form.Text = $"ligma input {capture.Input}";
                     form.PerformLayout();
-                    capture.Window = picBox.Handle;
-                    //capture.Start();
+                    SetFormSizeByCaptureSize(form, capture);
+                    capture.Window = form.Handle;
+                    forms.Add(form);
+                }
 
-                    Application.Run(form);                
+                if (forms.Count > 0)
+                {
+                    foreach (var form in forms)
+                        form.Visible = true;
+                    
+                    Application.Run(forms[0]);                    
+                }
+
+                foreach (var form in forms)
+                {
+                    if (!form.IsDisposed)
+                        form.Dispose();
                 }
             }
         }
 
+        private static void SetFormSizeByCaptureSize(Control control, IRgbEasyCapture capture)
+        {
+            var del = new Action(() =>
+            {
+                control.ClientSize = new Size(capture.CaptureHeight * 4 / 3, capture.CaptureHeight);
+            });
+
+            if (control.InvokeRequired)
+                control.Invoke(del);
+            else
+                del();
+        }
+
         private static void CaptureOnModeChanged(object sender, RgbEasyModeChangedEventArgs e)
         {
-            Debug.WriteLine($"Mode changed: totalLines={e.Info.TotalNumberOfLines} vRate={e.Info.LineRate} hRate={e.Info.RefreshRate}");
-            Debug.WriteLine($"Capture: hPos={e.Capture.HorizontalPosition} hScale={e.Capture.HorizontalScale} vPos={e.Capture.VerticalPosition}");
+            Debug.WriteLine(
+                $"Mode changed: totalLines={e.Info.TotalNumberOfLines} vRate={e.Info.LineRate} hRate={e.Info.RefreshRate}");
+            Debug.WriteLine(
+                $"Capture: hPos={e.Capture.HorizontalPosition} hScale={e.Capture.HorizontalScale} vPos={e.Capture.VerticalPosition}");
+            Debug.WriteLine($"Capture: width={e.Capture.CaptureWidth} height={e.Capture.CaptureHeight}");
+            var form = Control.FromHandle(e.Hwnd);
+            SetFormSizeByCaptureSize(form, e.Capture);
         }
     }
 }
