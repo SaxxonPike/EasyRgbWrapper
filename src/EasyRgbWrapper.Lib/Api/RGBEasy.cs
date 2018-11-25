@@ -10,6 +10,35 @@ namespace Datapath.RGBEasy
       DGC133 = 1,
    }
 
+   public enum RGBDEVICETYPE
+   {
+      DEVICETYPE133 = 133,
+      DEVICETYPE139 = 139,
+      DEVICETYPE144 = 144,
+      DEVICETYPE150 = 150,
+      DEVICETYPE151 = 151,
+      DEVICETYPE139S = 1139,
+      DEVICETYPE150S = 1150,
+      DEVICETYPE151S = 1151,
+      DEVICETYPE153 = 153,
+      DEVICETYPE154 = 154,
+      DEVICETYPE159 = 159,
+      DEVICETYPE161 = 161,
+      DEVICETYPE165 = 165,
+      DEVICETYPE167 = 167,
+      DEVICETYPE168 = 168,
+      DEVICETYPE179 = 179,
+      DEVICETYPE182 = 182,
+      DEVICETYPE184 = 184,
+      DEVICETYPE186 = 186,
+      DEVICETYPE199 = 199,
+      DEVICETYPE200 = 200,
+      DEVICETYPE201 = 201,
+      DEVICETYPE204 = 204,
+      DEVICETYPE205 = 205,
+      DEVICETYPE211 = 211
+   }
+
    public enum CAPTURESTATE
    {
       CAPTURING = 0,
@@ -17,6 +46,19 @@ namespace Datapath.RGBEasy
       INVALIDSIGNAL = 2,
       PAUSED = 3,
       ERROR = 4,
+   }
+
+   public enum PIXELGAMUT
+   {
+      PIXELGAMUT709 = 0,
+      PIXELGAMUT601 = 1,
+      PIXELGAMUT2020 = 2
+   }
+
+   public enum PIXELRANGE
+   {
+      FULL = 0,
+      LIMITED = 1
    }
 
    public enum PIXELFORMAT
@@ -28,6 +70,12 @@ namespace Datapath.RGBEasy
       GREY = 4,
       RGB24 = 5,
       YUY2 = 6,
+      YVYU = 7,
+      UYVY = 8,
+      NV12 = 9,
+      YV12 = 10,
+      RGB10 = 11,
+      Y410 = 12
    }
 
    public enum DEINTERLACE
@@ -44,6 +92,36 @@ namespace Datapath.RGBEasy
       VIDEO = 1,
    }
 
+   public enum DIGITAL_INPUT_TYPE
+   {
+      DVI = 0,
+      SDI = 1,
+      DISPLAYPORT = 2
+   }
+
+   public enum VGA_INPUT_FLAGS
+   {
+      VGA5WIRE = 0,
+      VGA4WIRE = 1,
+      SOG_SOY = 2
+   }
+
+   public enum SDI_INPUT_FLAGS
+   {
+      SD = 0,
+      HD = 1,
+      HD_DL = 2,
+      SDI3GA = 3,
+      SDI3GB = 4,
+      SDI3GB_DS = 5,
+      SDI3GB_STEREO = 6
+   }
+
+   public enum DISPLAYPORT_INPUT_FLAGS
+   {
+      STEREO_FS = 1
+   }
+
    public enum SIGNALTYPE
    {
       NOSIGNAL = 0,
@@ -53,6 +131,16 @@ namespace Datapath.RGBEasy
       COMPOSITE = 4,
       SVIDEO = 5,
       OUTOFRANGE = 6,
+      SDI = 7,
+      DLDVI = 8,
+      DISPLAYPORT = 9
+   }
+
+   public enum BUFFERTYPE
+   {
+      MAPPED = 0,
+      DIRECTGMA = 1,
+      GPUDIRECT = 2
    }
 
    public enum OSD_TYPE
@@ -1700,6 +1788,8 @@ namespace Datapath.RGBEasy
       INVALIDHANDLE = 0x01160007,
       UNSUPPORTED = 0x01160008,
       INVALIDOSD = 0x01160009,
+      INVALIDDATA = 0x0116000A,
+      AUDIOINPUT = 0x0116000B,
 
       API_ERROR_UNABLE_TO_OPEN_KEY = 0x00050000,
       API_ERROR_UNABLE_TO_READ_VALUE = 0x00050001,

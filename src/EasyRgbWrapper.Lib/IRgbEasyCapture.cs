@@ -81,6 +81,13 @@ namespace EasyRgbWrapper.Lib
         CAPTURESTATE CaptureState { get; }
         int MessageDelay { get; set; }
         PIXELFORMAT PixelFormat { get; set; }
+        void SaveCurrentFrame(string fileName);
+        bool EnableDirectDma { get; set; }
+        void DrawDefaultFrame();
+        void DrawDefaultNoSignal();
+        void DrawDefaultInvalidSignal(int horClock, int verClock);
+        RgbEasyModeInfo ModeInfo { get; }
+        bool FastDownScaling { get; set; }
         void DetectInput();
         void Reset();
         int Input { get; set; }
