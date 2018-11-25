@@ -41,9 +41,6 @@ namespace EasyRgbWrapper.Lib
             }
         }
 
-        public IList<IRgbEasyInput> ConnectedInputs => 
-            Inputs.Where(i => i.Signal.Type != SIGNALTYPE.NOSIGNAL).ToList();
-
         public void Dispose()
         {
             if (_dll != IntPtr.Zero)

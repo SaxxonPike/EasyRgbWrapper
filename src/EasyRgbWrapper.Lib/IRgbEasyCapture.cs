@@ -21,7 +21,7 @@ namespace EasyRgbWrapper.Lib
         int VerticalPositionMinimum { get; }
         int VerticalPositionMaximum { get; }
         int VerticalPositionDefault { get; }
-        int VerticalPosition { get; }
+        int VerticalPosition { get; set; }
         int CaptureWidthMinimum { get; }
         int CaptureWidthMaximum { get; }
         int CaptureWidthDefault { get; }

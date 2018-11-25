@@ -20,5 +20,7 @@ namespace EasyRgbWrapper.Gui.Controls
             foreach (var form in _forms.Where(f => f != null && !f.IsDisposed).ToList())
                  form.Dispose();
         }
+
+        public Form GetPrimaryForm() => _forms.FirstOrDefault();
     }
 }

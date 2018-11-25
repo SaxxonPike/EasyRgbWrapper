@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net461</TargetFrameworks>
     <OutputType>exe</OutputType>
@@ -8,5 +8,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EasyRgbWrapper.Lib\EasyRgbWrapper.Lib.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.8.1" />
   </ItemGroup>
 </Project>
