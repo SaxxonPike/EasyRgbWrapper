@@ -22,7 +22,7 @@ namespace EasyRgbWrapper.Lib
                 return result != 0;
             }
         }
-        
+
         public bool IsDviSupported
         {
             get
@@ -33,7 +33,7 @@ namespace EasyRgbWrapper.Lib
                 return result != 0;
             }
         }
-        
+
         public bool IsComponentSupported
         {
             get
@@ -44,7 +44,7 @@ namespace EasyRgbWrapper.Lib
                 return result != 0;
             }
         }
-        
+
         public bool IsCompositeSupported
         {
             get
@@ -55,7 +55,7 @@ namespace EasyRgbWrapper.Lib
                 return result != 0;
             }
         }
-        
+
         public bool IsSvideoSupported
         {
             get
@@ -75,7 +75,27 @@ namespace EasyRgbWrapper.Lib
                     (uint) _index, out var signalType, out var width, out var height, out var refreshRate);
                 if (error != RGBERROR.NO_ERROR)
                     throw new RgbEasyException(error);
-                return new RgbEasySignalType((int)width, (int)height, (int)refreshRate, signalType);
+                return new RgbEasySignalType((int) width, (int) height, (int) refreshRate, signalType);
+            }
+        }
+
+        public RgbEasyInputInfo Info
+        {
+            get
+            {
+                var info = new RGBINPUTINFO {Size = 48};
+                var error = RGB.GetInputInfo(
+                    (uint) _index, ref info);
+                if (error != RGBERROR.NO_ERROR)
+                    throw new RgbEasyException(error);
+
+                var driver = new RgbEasyDriverVersion(unchecked((int) info.Driver.Major),
+                    unchecked((int) info.Driver.Minor), unchecked((int) info.Driver.Micro),
+                    unchecked((int) info.Driver.Revision));
+                var location = new RgbEasyInputLocation(unchecked((int) info.Location.Bus), unchecked((int) info.Location.Device), unchecked((int) info.Location.Function));
+
+                return new RgbEasyInputInfo(driver, location, unchecked((int) info.Firmware),
+                    unchecked((int) info.VHDL), unchecked((long) info.Identifier));
             }
         }
 

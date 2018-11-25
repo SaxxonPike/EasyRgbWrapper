@@ -101,8 +101,8 @@ namespace Datapath.RGBEasy
    public struct RGBINPUTINFO
    {
       public uint Size;
-      RGBDRIVERVER Driver;
-      RGBLOCATION Location;
+      public RGBDRIVERVER Driver;
+      public RGBLOCATION Location;
       public uint Firmware;
       public uint VHDL;
       public ulong Identifier;

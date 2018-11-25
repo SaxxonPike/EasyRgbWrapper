@@ -89,6 +89,28 @@ namespace EasyRgbWrapper.Lib
             }
         }
 
+        public bool EnableNoSignalEvent
+        {
+            set
+            {
+                AssertNotDisposed();
+                var error = RGB.SetNoSignalFn(_handle, value ? OnNoSignal : (RGBNOSIGNALFN) null, IntPtr.Zero);
+                if (error != RGBERROR.NO_ERROR)
+                    throw new RgbEasyException(error);
+            }
+        }
+
+        public bool EnableInvalidSignalEvent
+        {
+            set
+            {
+                AssertNotDisposed();
+                var error = RGB.SetInvalidSignalFn(_handle, value ? OnInvalidSignal : (RGBINVALIDSIGNALFN) null, IntPtr.Zero);
+                if (error != RGBERROR.NO_ERROR)
+                    throw new RgbEasyException(error);
+            }
+        }
+        
         public int HorizontalScaleMinimum
         {
             get

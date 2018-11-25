@@ -7,9 +7,13 @@ namespace EasyRgbWrapper.Lib
     {
         event EventHandler<RgbEasyFrameCapturedEventArgs> FrameCaptured;
         event EventHandler<RgbEasyModeChangedEventArgs> ModeChanged;
+        event EventHandler<RgbEasyNoSignalEventArgs> NoSignal;
+        event EventHandler<RgbEasyInvalidSignalEventArgs> InvalidSignal;
         
         bool EnableFrameCapturedEvent { set; }
         bool EnableModeChangedEvent { set; }
+        bool EnableNoSignalEvent { set; }
+        bool EnableInvalidSignalEvent { set; }
         int HorizontalScaleMinimum { get; }
         int HorizontalScaleMaximum { get; }
         int HorizontalScaleDefault { get; }
