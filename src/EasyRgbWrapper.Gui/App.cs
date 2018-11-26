@@ -23,45 +23,43 @@ namespace EasyRgbWrapper.Gui
             using (var formService = new FormService())
             {
                 var inputs = _context.Inputs.ToList();
-                var forms = new List<Form>();
+                var captures = new List<IRgbEasyCapture>();
+                var controlForm = formService.CreateControlForm();
                 
                 foreach (var input in inputs)
                 {
-                    var form = formService.Create();
-                    form.FormBorderStyle = FormBorderStyle.FixedDialog;
-                    form.MinimizeBox = true;
-                    form.MaximizeBox = false;
+                    var form = formService.CreateCaptureForm();
+                    
                     var capture = input.OpenCapture();
                     capture.ModeChanged += CaptureOnModeChanged;
                     capture.EnableModeChangedEvent = true;
                     form.Text = $"ligma input {capture.Input}";
                     form.PerformLayout();
+                    form.Visible = true;
                     SetFormSizeByCaptureSize(form, capture);
                     capture.Window = form.Handle;
-                    forms.Add(form);
-                }
+                    captures.Add(capture);
 
-                if (forms.Count > 0)
-                {
-                    foreach (var form in forms)
-                        form.Visible = true;
-                    
-                    Application.Run(formService.GetPrimaryForm());                    
+                    form.GotFocus += (sender, eventArgs) => controlForm.Subject = capture;
                 }
+                
+                Application.Run(controlForm.Form);                    
 
-                foreach (var form in forms)
-                {
-                    if (!form.IsDisposed)
-                        form.Dispose();
-                }
+                foreach (var capture in captures)
+                    capture?.Dispose();
             }            
         }
         
         private static void SetFormSizeByCaptureSize(Control control, IRgbEasyCapture capture)
         {
+            var height = capture.CaptureHeight;
+
+            if (height < 600)
+                height *= 2;
+            
             var del = new Action(() =>
             {
-                control.ClientSize = new Size(capture.CaptureHeight * 4 / 3, capture.CaptureHeight);
+                control.ClientSize = new Size(height * 4 / 3, height);
             });
 
             if (control.InvokeRequired)

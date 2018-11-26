@@ -1,5 +1,8 @@
+using System.ComponentModel;
+
 namespace EasyRgbWrapper.Lib
 {
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public struct RgbEasyColorBalance
     {
         public RgbEasyColorBalance(int brightnessRed, int brightnessGreen, int brightnessBlue, int contrastRed,
@@ -19,5 +22,9 @@ namespace EasyRgbWrapper.Lib
         public int ContrastRed { get; }
         public int ContrastGreen { get; }
         public int ContrastBlue { get; }
+
+        public override string ToString() => 
+            $"Brightness: {BrightnessRed}, {BrightnessGreen}, {BrightnessBlue}; " +
+            $"Contrast: {ContrastRed}, {ContrastGreen}, {ContrastBlue}";
     }
 }

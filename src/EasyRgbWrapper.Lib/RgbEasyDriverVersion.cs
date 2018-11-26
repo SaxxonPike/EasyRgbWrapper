@@ -1,5 +1,8 @@
+using System.ComponentModel;
+
 namespace EasyRgbWrapper.Lib
 {
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public struct RgbEasyDriverVersion
     {
         public RgbEasyDriverVersion(int major, int minor, int micro, int revision)
@@ -14,5 +17,8 @@ namespace EasyRgbWrapper.Lib
         public int Minor { get; }
         public int Micro { get; }
         public int Revision { get; }
+
+        public override string ToString() => 
+            $"{Major}.{Minor}.{Micro}.{Revision}";
     }
 }

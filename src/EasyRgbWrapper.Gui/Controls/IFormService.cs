@@ -5,7 +5,7 @@ namespace EasyRgbWrapper.Gui.Controls
 {
     public interface IFormService : IDisposable
     {
-        Form Create();
-        Form GetPrimaryForm();
+        Form CreateCaptureForm();
+        IControlForm CreateControlForm();
     }
 }

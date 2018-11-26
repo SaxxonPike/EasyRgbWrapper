@@ -1,5 +1,8 @@
+using System.ComponentModel;
+
 namespace EasyRgbWrapper.Lib
 {
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public struct RgbEasyInputInfo
     {
         public RgbEasyInputInfo(RgbEasyDriverVersion driverVersion, RgbEasyInputLocation location, int firmware, int vhdl, long identifier)
@@ -16,5 +19,10 @@ namespace EasyRgbWrapper.Lib
         public int Firmware { get; }
         public int Vhdl { get; }
         public long Identifier { get; }
+
+        public override string ToString()
+        {
+            return $"{Location} ({Identifier})";
+        }
     }
 }

@@ -1,8 +1,10 @@
 using System;
+using System.ComponentModel;
 using Datapath.RGBEasy;
 
 namespace EasyRgbWrapper.Lib
 {
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public class RgbEasyInput : IRgbEasyInput
     {
         private readonly int _index;
@@ -102,5 +104,7 @@ namespace EasyRgbWrapper.Lib
         public int Number => _index;
 
         public IRgbEasyCapture OpenCapture() => new RgbEasyCapture(_index);
+
+        public override string ToString() => $"Input {_index}";
     }
 }

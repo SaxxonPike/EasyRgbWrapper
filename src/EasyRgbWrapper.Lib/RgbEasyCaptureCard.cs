@@ -1,7 +1,9 @@
+using System.ComponentModel;
 using Datapath.RGBEasy;
 
 namespace EasyRgbWrapper.Lib
 {
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public class RgbEasyCaptureCard : IRgbEasyCaptureCard
     {
         public int InputCount

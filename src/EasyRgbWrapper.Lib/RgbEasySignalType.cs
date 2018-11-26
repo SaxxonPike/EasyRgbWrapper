@@ -16,5 +16,8 @@ namespace EasyRgbWrapper.Lib
         public int Width { get; }
         public int Height { get; }
         public int RefreshRate { get; }
+
+        public override string ToString() => 
+            $"{Type}: {Width}x{Height} @ {RefreshRate}hz";
     }
 }

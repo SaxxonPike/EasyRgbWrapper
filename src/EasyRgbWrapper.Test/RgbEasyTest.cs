@@ -18,7 +18,7 @@ namespace EasyRgbWrapper.Test
             using (var context = new RgbEasyContext())
             {
                 var inputs = context.Inputs;
-                var form = formService.Create();
+                var form = formService.CreateCaptureForm();
                 form.Size = new Size(640, 480);
                 form.Show();
 

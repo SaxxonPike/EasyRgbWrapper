@@ -1,7 +1,9 @@
+using System.ComponentModel;
 using Datapath.RGBEasy;
 
 namespace EasyRgbWrapper.Lib
 {
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public struct RgbEasyModeInfo
     {
         public RgbEasyModeInfo(CAPTURESTATE captureState, int refreshRate, int lineRate, int totalLines,
@@ -23,5 +25,10 @@ namespace EasyRgbWrapper.Lib
         public int LineRate { get; }
         public CAPTURESTATE State { get; }
         public int RefreshRate { get; }
+
+        public override string ToString()
+        {
+            return $"{State}: {TotalLines} lines, H={RefreshRate}hz, V={LineRate}hz";
+        }
     }
 }

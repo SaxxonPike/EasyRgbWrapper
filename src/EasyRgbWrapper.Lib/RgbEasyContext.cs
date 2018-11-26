@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Datapath.RGBEasy;
 
 namespace EasyRgbWrapper.Lib
 {
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public class RgbEasyContext : IRgbEasyContext
     {
         private readonly IntPtr _dll;

@@ -1,8 +1,10 @@
 using System;
+using System.ComponentModel;
 using Datapath.RGBEasy;
 
 namespace EasyRgbWrapper.Lib
 {
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public class RgbEasyCapture : IRgbEasyCapture
     {
         public event EventHandler<RgbEasyFrameCapturedEventArgs> FrameCaptured;
@@ -10,11 +12,13 @@ namespace EasyRgbWrapper.Lib
         public event EventHandler<RgbEasyNoSignalEventArgs> NoSignal;
         public event EventHandler<RgbEasyInvalidSignalEventArgs> InvalidSignal;
 
+        private readonly int _inputIndex;
         private readonly IntPtr _handle;
         private bool _disposed;
 
         public RgbEasyCapture(int inputIndex)
         {
+            _inputIndex = inputIndex;
             var error = RGB.OpenInput((uint) inputIndex, out var handle);
             if (error != RGBERROR.NO_ERROR)
                 throw new RgbEasyException(error);
@@ -1214,5 +1218,8 @@ namespace EasyRgbWrapper.Lib
                 RGB.CloseInput(_handle);
             }
         }
+
+        public override string ToString() => 
+            $"Input Capture {_inputIndex}";
     }
 }

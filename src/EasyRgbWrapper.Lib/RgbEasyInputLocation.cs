@@ -1,5 +1,8 @@
+using System.ComponentModel;
+
 namespace EasyRgbWrapper.Lib
 {
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public struct RgbEasyInputLocation
     {
         public RgbEasyInputLocation(int bus, int device, int function)
@@ -12,5 +15,8 @@ namespace EasyRgbWrapper.Lib
         public int Bus { get; }
         public int Device { get; }
         public int Function { get; }
+
+        public override string ToString() => 
+            $"Bus {Bus}, Device {Device}, Function {Function}";
     }
 }
