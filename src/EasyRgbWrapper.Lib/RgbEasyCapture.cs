@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Drawing;
 using Datapath.RGBEasy;
 
 namespace EasyRgbWrapper.Lib
@@ -17,7 +18,7 @@ namespace EasyRgbWrapper.Lib
         private readonly IntPtr _handle;
         private bool _disposed;
 
-        public RgbEasyCapture(int inputIndex)
+        internal RgbEasyCapture(int inputIndex)
         {
             _inputIndex = inputIndex;
             var error = RGB.OpenInput((uint) inputIndex, out var handle);
@@ -1226,6 +1227,35 @@ namespace EasyRgbWrapper.Lib
                 throw new RgbEasyException(error);
         }
 
+        public Size OutputSize
+        {
+            get
+            {
+                AssertNotDisposed();
+                var error = RGB.GetOutputSize(_handle, out var width, out var height);
+                if (error != RGBERROR.NO_ERROR)
+                    throw new RgbEasyException(error);
+                return new Size(unchecked((int) width), unchecked((int) height));
+            }
+            set
+            {
+                AssertNotDisposed();
+                var error = RGB.SetOutputSize(_handle, unchecked((uint)value.Width), unchecked((uint)value.Height));
+                if (error != RGBERROR.NO_ERROR)
+                    throw new RgbEasyException(error);
+            }
+        }
+
+        public bool UseOutputBuffers
+        {
+            set
+            {
+                AssertNotDisposed();
+                var error = RGB.UseOutputBuffers(_handle, value ? 1 : 0);
+                if (error != RGBERROR.NO_ERROR)
+                    throw new RgbEasyException(error);
+            }
+        }
 
         public void Dispose()
         {

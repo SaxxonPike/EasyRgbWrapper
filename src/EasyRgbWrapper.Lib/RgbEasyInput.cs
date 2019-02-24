@@ -9,7 +9,7 @@ namespace EasyRgbWrapper.Lib
     {
         private readonly int _index;
 
-        public RgbEasyInput(int index)
+        internal RgbEasyInput(int index)
         {
             _index = index;
         }

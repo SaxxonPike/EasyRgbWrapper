@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using Datapath.RGBEasy;
 
 namespace EasyRgbWrapper.Lib
@@ -96,5 +97,7 @@ namespace EasyRgbWrapper.Lib
         IntPtr Window { get; set; }
         void Start();
         void Stop();
+        bool UseOutputBuffers { set; }
+        Size OutputSize { get; set; }
     }
 }

@@ -6,6 +6,10 @@ namespace EasyRgbWrapper.Lib
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class RgbEasyCaptureCard : IRgbEasyCaptureCard
     {
+        internal RgbEasyCaptureCard()
+        {
+        }
+        
         public int InputCount
         {
             get
