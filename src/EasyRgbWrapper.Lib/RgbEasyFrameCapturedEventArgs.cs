@@ -6,6 +6,8 @@ using Datapath.RGBEasy;
 
 namespace EasyRgbWrapper.Lib
 {
+    // ReSharper disable MemberCanBePrivate.Global
+    
     public class RgbEasyFrameCapturedEventArgs : EventArgs
     {
         public RgbEasyFrameCapturedEventArgs(IntPtr hwnd, IRgbEasyCapture capture, BITMAPINFOHEADER bitmapInfo, IntPtr bitmapBits,

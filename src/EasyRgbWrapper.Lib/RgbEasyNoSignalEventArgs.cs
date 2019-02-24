@@ -1,24 +1,20 @@
 using System;
-using Datapath.RGBEasy;
 
 namespace EasyRgbWrapper.Lib
 {
     // ReSharper disable MemberCanBePrivate.Global
-
-    public class RgbEasyModeChangedEventArgs : EventArgs
+    
+    public class RgbEasyNoSignalEventArgs : EventArgs
     {
-        public RgbEasyModeChangedEventArgs(IntPtr hwnd, IRgbEasyCapture capture, RGBMODECHANGEDINFO info,
-            IntPtr userData)
+        public RgbEasyNoSignalEventArgs(IntPtr hwnd, IRgbEasyCapture capture, IntPtr userData)
         {
             Hwnd = hwnd;
             Capture = capture;
-            Info = info;
             UserData = userData;
         }
 
         public IntPtr Hwnd { get; }
         public IRgbEasyCapture Capture { get; }
-        public RGBMODECHANGEDINFO Info { get; }
         public IntPtr UserData { get; }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
-// ReSharper disable All
+// // ReSharper disable All
 
 namespace Datapath.RGBEasy
 {

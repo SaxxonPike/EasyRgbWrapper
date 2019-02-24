@@ -3,6 +3,8 @@ using Datapath.RGBEasy;
 
 namespace EasyRgbWrapper.Lib
 {
+    // ReSharper disable MemberCanBePrivate.Global
+    
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public struct RgbEasyModeInfo
     {

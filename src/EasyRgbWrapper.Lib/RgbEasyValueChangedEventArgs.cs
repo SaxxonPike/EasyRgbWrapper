@@ -5,9 +5,9 @@ namespace EasyRgbWrapper.Lib
 {
     // ReSharper disable MemberCanBePrivate.Global
 
-    public class RgbEasyModeChangedEventArgs : EventArgs
+    public class RgbEasyValueChangedEventArgs : EventArgs
     {
-        public RgbEasyModeChangedEventArgs(IntPtr hwnd, IRgbEasyCapture capture, RGBMODECHANGEDINFO info,
+        public RgbEasyValueChangedEventArgs(IntPtr hwnd, IRgbEasyCapture capture, RGBVALUECHANGEDINFO info,
             IntPtr userData)
         {
             Hwnd = hwnd;
@@ -18,7 +18,7 @@ namespace EasyRgbWrapper.Lib
 
         public IntPtr Hwnd { get; }
         public IRgbEasyCapture Capture { get; }
-        public RGBMODECHANGEDINFO Info { get; }
+        public RGBVALUECHANGEDINFO Info { get; }
         public IntPtr UserData { get; }
     }
 }

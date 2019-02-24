@@ -11,6 +11,7 @@ namespace EasyRgbWrapper.Lib
         public event EventHandler<RgbEasyModeChangedEventArgs> ModeChanged;
         public event EventHandler<RgbEasyNoSignalEventArgs> NoSignal;
         public event EventHandler<RgbEasyInvalidSignalEventArgs> InvalidSignal;
+        public event EventHandler<RgbEasyValueChangedEventArgs> ValueChanged;
 
         private readonly int _inputIndex;
         private readonly IntPtr _handle;
@@ -64,6 +65,11 @@ namespace EasyRgbWrapper.Lib
             InvalidSignal?.Invoke(this,
                 new RgbEasyInvalidSignalEventArgs(hwnd, this, (int) horClock, (int) verClock, userdata));
 
+        private void OnValueChanged(IntPtr hWnd, IntPtr hRGB, ref RGBVALUECHANGEDINFO valueChangedInfo,
+            IntPtr userData) =>
+            ValueChanged?.Invoke(this,
+                new RgbEasyValueChangedEventArgs(hWnd, this, valueChangedInfo, userData));
+
         private void AssertNotDisposed()
         {
             if (_disposed)
@@ -93,6 +99,18 @@ namespace EasyRgbWrapper.Lib
             }
         }
 
+        public bool EnableValueChangedEvent
+        {
+            set
+            {
+                AssertNotDisposed();
+                var error = RGB.SetValueChangedFn(_handle, value ? OnValueChanged : (RGBVALUECHANGEDFN) null,
+                    IntPtr.Zero);
+                if (error != RGBERROR.NO_ERROR)
+                    throw new RgbEasyException(error);
+            }
+        }
+
         public bool EnableNoSignalEvent
         {
             set
@@ -109,12 +127,13 @@ namespace EasyRgbWrapper.Lib
             set
             {
                 AssertNotDisposed();
-                var error = RGB.SetInvalidSignalFn(_handle, value ? OnInvalidSignal : (RGBINVALIDSIGNALFN) null, IntPtr.Zero);
+                var error = RGB.SetInvalidSignalFn(_handle, value ? OnInvalidSignal : (RGBINVALIDSIGNALFN) null,
+                    IntPtr.Zero);
                 if (error != RGBERROR.NO_ERROR)
                     throw new RgbEasyException(error);
             }
         }
-        
+
         public int HorizontalScaleMinimum
         {
             get
@@ -1219,7 +1238,7 @@ namespace EasyRgbWrapper.Lib
             }
         }
 
-        public override string ToString() => 
+        public override string ToString() =>
             $"Input Capture {_inputIndex}";
     }
 }
