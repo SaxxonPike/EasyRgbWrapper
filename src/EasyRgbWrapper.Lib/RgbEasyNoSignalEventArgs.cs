@@ -16,5 +16,10 @@ namespace EasyRgbWrapper.Lib
         public IntPtr Hwnd { get; }
         public IRgbEasyCapture Capture { get; }
         public IntPtr UserData { get; }
+        
+        /// <summary>
+        /// If False, the default No Signal handler will be executed after the event is concluded. 
+        /// </summary>
+        public bool PreventDefaultHandler { get; set; }
     }
 }

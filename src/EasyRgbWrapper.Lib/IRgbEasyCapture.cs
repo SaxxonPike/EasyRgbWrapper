@@ -6,8 +6,18 @@ namespace EasyRgbWrapper.Lib
 {
     public interface IRgbEasyCapture : IDisposable
     {
+        /// <summary>
+        /// When EnableFrameCapturedEvent is True, this event is fired when a frame of RGB data has been captured.
+        /// </summary>
         event EventHandler<RgbEasyFrameCapturedEventArgs> FrameCaptured;
+        
+        /// <summary>
+        /// When EnableModeChangedEvent is True, this event is fired when a new video mode is initialized, after the
+        /// mode parameters are determined but prior to them being sent to the capture card.
+        /// </summary>
         event EventHandler<RgbEasyModeChangedEventArgs> ModeChanged;
+        
+        
         event EventHandler<RgbEasyNoSignalEventArgs> NoSignal;
         event EventHandler<RgbEasyInvalidSignalEventArgs> InvalidSignal;
         event EventHandler<RgbEasyValueChangedEventArgs> ValueChanged; 

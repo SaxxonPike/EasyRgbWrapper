@@ -21,5 +21,6 @@ namespace EasyRgbWrapper.Lib
         public IntPtr UserData { get; }
         public int HorizontalClock { get; }
         public int VerticalClock { get; }
+        public bool PreventDefaultHandler { get; set; }
     }
 }

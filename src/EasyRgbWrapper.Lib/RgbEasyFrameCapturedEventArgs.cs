@@ -25,6 +25,7 @@ namespace EasyRgbWrapper.Lib
         public BITMAPINFOHEADER BitmapInfo { get; }
         public IntPtr BitmapBits { get; }
         public IntPtr UserData { get; }
+        public bool PreventDefaultHandler { get; set; }
 
         public Bitmap GetFrame()
         {
