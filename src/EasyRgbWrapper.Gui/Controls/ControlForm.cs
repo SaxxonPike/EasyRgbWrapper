@@ -28,6 +28,8 @@ namespace EasyRgbWrapper.Gui.Controls
             
             Form.Controls.Add(_toolStrip);
             Form.Controls.Add(_editControl);
+
+            Form.Closed += (sender, args) => Application.Exit();
         }
 
         private bool IsDisposed 

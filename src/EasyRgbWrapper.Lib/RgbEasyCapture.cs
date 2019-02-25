@@ -1218,7 +1218,7 @@ namespace EasyRgbWrapper.Lib
             }
         }
 
-        private void OnModeChanged(IntPtr hWnd, IntPtr hRgb, ref RGBMODECHANGEDINFO modeChangedInfo, IntPtr userData)
+        private void OnModeChanged(IntPtr hWnd, IntPtr hRgb, RGBMODECHANGEDINFO modeChangedInfo, IntPtr userData)
         {
             lock (_handlerLock)
             {
@@ -1227,7 +1227,7 @@ namespace EasyRgbWrapper.Lib
             }
         }
 
-        private void OnFrameCaptured(IntPtr hWnd, IntPtr hRgb, ref BITMAPINFOHEADER bitmapInfo, IntPtr bitmapBits,
+        private void OnFrameCaptured(IntPtr hWnd, IntPtr hRgb, BITMAPINFOHEADER bitmapInfo, IntPtr bitmapBits,
             IntPtr userData)
         {
             lock (_handlerLock)

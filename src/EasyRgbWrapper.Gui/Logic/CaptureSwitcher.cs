@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Datapath.RGBEasy;
 using EasyRgbWrapper.Lib;
+using Newtonsoft.Json;
 
 namespace EasyRgbWrapper.Gui.Logic
 {
@@ -20,18 +21,46 @@ namespace EasyRgbWrapper.Gui.Logic
             {
                 if (parameters.Lines == lines && parameters.VRate == vRate && parameters.HRate == hRate)
                 {
-                    if (parameters.Width != null)
-                        capture.CaptureWidth = parameters.Width.Value;
-                    if (parameters.Height != null)
-                        capture.CaptureHeight = parameters.Height.Value;
-                    capture.Phase = parameters.Phase ?? capture.PhaseDefault;
-                    capture.HorizontalScale = parameters.HScale ?? capture.HorizontalScaleDefault;
-                    capture.HorizontalPosition = parameters.HPos ?? capture.HorizontalPositionDefault;
-                    capture.VerticalPosition = parameters.VPos ?? capture.VerticalPositionDefault;
+                    capture.CaptureWidth = GetValue(parameters.Width, 
+                        capture.CaptureWidthMinimum, capture.CaptureWidthMaximum, 
+                        capture.CaptureWidthDefault);
+                    
+                    capture.CaptureHeight = GetValue(parameters.Height, 
+                        capture.CaptureHeightMinimum, capture.CaptureHeightMaximum, 
+                        capture.CaptureHeightDefault);
+
+                    capture.Phase = GetValue(parameters.Phase,
+                        capture.PhaseMinimum, capture.PhaseMaximum, 
+                        capture.PhaseDefault);
+
+                    capture.HorizontalScale = GetValue(parameters.HScale,
+                        capture.HorizontalScaleMinimum, capture.HorizontalScaleMaximum, 
+                        capture.HorizontalScaleDefault);
+
+                    capture.HorizontalPosition = GetValue(parameters.HPos,
+                        capture.HorizontalPositionMinimum, capture.HorizontalPositionMaximum, 
+                        capture.HorizontalPositionDefault);
+                    
+                    capture.VerticalPosition = GetValue(parameters.VPos,
+                        capture.VerticalPositionMinimum, capture.VerticalPositionMaximum, 
+                        capture.VerticalPositionDefault);
+                    
                     capture.PixelFormat = parameters.PixelFormat ?? PIXELFORMAT.RGB888;
+                    
                     return;
                 }
             }
+        }
+
+        private int GetValue(int? value, int minimum, int maximum, int def)
+        {
+            if (value == null)
+                return def;
+            if (value < minimum)
+                value = minimum;
+            if (value > maximum)
+                value = maximum;
+            return value.Value;
         }
 
         public void Set(CaptureParameters parameters)

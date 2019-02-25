@@ -334,9 +334,9 @@ namespace Datapath.RGBEasy
       public UNSIGNEDVALUE VideoStandard;
    }
 
-   public delegate void RGBFRAMECAPTUREDFN(IntPtr hWnd, IntPtr hRGB, ref BITMAPINFOHEADER bitmapInfo, IntPtr bitmapBits, IntPtr userData);
+   public delegate void RGBFRAMECAPTUREDFN(IntPtr hWnd, IntPtr hRGB, [Out] BITMAPINFOHEADER bitmapInfo, IntPtr bitmapBits, IntPtr userData);
 
-   public delegate void RGBMODECHANGEDFN(IntPtr hWnd, IntPtr hRGB, ref RGBMODECHANGEDINFO modeChangedInfo, IntPtr userData);
+   public delegate void RGBMODECHANGEDFN(IntPtr hWnd, IntPtr hRGB, [Out] RGBMODECHANGEDINFO modeChangedInfo, IntPtr userData);
 
    public delegate void RGBNOSIGNALFN(IntPtr hWnd, IntPtr hRGB, IntPtr userData);
 
