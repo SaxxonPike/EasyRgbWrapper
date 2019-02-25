@@ -12,7 +12,7 @@ namespace EasyRgbWrapper.Lib
 
         private readonly int _inputIndex;
         private bool _disposed;
-        private object _handlerLock = new object();
+        private readonly object _handlerLock = new object();
 
         internal RgbEasyCapture(int inputIndex)
         {
