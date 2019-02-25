@@ -6,6 +6,11 @@ namespace EasyRgbWrapper.Gui.Controls
     public class ControlForm : IControlForm, IDisposable
     {
         private readonly PropertyGrid _editControl;
+        private readonly ToolStrip _toolStrip;
+        private readonly ToolStripButton _saveButton;
+        
+        public event EventHandler SaveClicked;
+        
         private bool _disposed;
 
         public ControlForm()
@@ -16,6 +21,12 @@ namespace EasyRgbWrapper.Gui.Controls
             };
             
             _editControl = new PropertyGrid {Dock = DockStyle.Fill};
+            _toolStrip = new ToolStrip();
+            _saveButton = new ToolStripButton {Text = "Save"};
+            _saveButton.Click += (sender, e) => SaveClicked?.Invoke(sender, e);
+            _toolStrip.Items.Add(_saveButton);
+            
+            Form.Controls.Add(_toolStrip);
             Form.Controls.Add(_editControl);
         }
 
@@ -34,7 +45,7 @@ namespace EasyRgbWrapper.Gui.Controls
             {
                 if (IsDisposed)
                     return;
-                _editControl.Invoke(new Action(() =>
+                _editControl.BeginInvoke(new Action(() =>
                 {
                     _editControl.SelectedObject = value;
                 }));

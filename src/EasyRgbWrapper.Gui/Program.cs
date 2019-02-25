@@ -13,6 +13,7 @@ namespace EasyRgbWrapper.Gui
 {
     internal static class Program
     {
+        [STAThread]
         private static void Main(string[] args)
         {
             BuildContainer().Resolve<IApp>().Start(args);

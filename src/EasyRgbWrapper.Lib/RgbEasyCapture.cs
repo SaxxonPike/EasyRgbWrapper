@@ -12,6 +12,7 @@ namespace EasyRgbWrapper.Lib
 
         private readonly int _inputIndex;
         private bool _disposed;
+        private object _handlerLock = new object();
 
         internal RgbEasyCapture(int inputIndex)
         {
@@ -28,9 +29,9 @@ namespace EasyRgbWrapper.Lib
             if (error != RGBERROR.NO_ERROR)
                 throw new RgbEasyException(error);
 
-            error = RGB.SetFrameCapturedFn(handle, OnFrameCaptured, IntPtr.Zero);
-            if (error != RGBERROR.NO_ERROR)
-                throw new RgbEasyException(error);
+//            error = RGB.SetFrameCapturedFn(handle, OnFrameCaptured, IntPtr.Zero);
+//            if (error != RGBERROR.NO_ERROR)
+//                throw new RgbEasyException(error);
 
             error = RGB.SetInvalidSignalFn(handle, OnInvalidSignal, IntPtr.Zero);
             if (error != RGBERROR.NO_ERROR)
@@ -40,9 +41,9 @@ namespace EasyRgbWrapper.Lib
             if (error != RGBERROR.NO_ERROR)
                 throw new RgbEasyException(error);
 
-            error = RGB.SetValueChangedFn(handle, OnValueChanged, IntPtr.Zero);
-            if (error != RGBERROR.NO_ERROR)
-                throw new RgbEasyException(error);
+//            error = RGB.SetValueChangedFn(handle, OnValueChanged, IntPtr.Zero);
+//            if (error != RGBERROR.NO_ERROR)
+//                throw new RgbEasyException(error);
 
             _handle = handle;
         }
@@ -1204,7 +1205,7 @@ namespace EasyRgbWrapper.Lib
         ///     It is the applications responsibility to close the capture using RGBCloseInput when the Error
         ///     callback function is executed.
         /// </summary>
-        private void HandleUnrecoverableError(IntPtr hwnd, IntPtr hrgb, uint error, IntPtr userdata,
+        private void HandleUnrecoverableError(IntPtr hWnd, IntPtr hRgb, uint error, IntPtr userData,
             ref IntPtr reserved)
         {
             try
@@ -1217,63 +1218,70 @@ namespace EasyRgbWrapper.Lib
             }
         }
 
-        private void OnModeChanged(IntPtr hwnd, IntPtr hrgb, ref RGBMODECHANGEDINFO modechangedinfo, IntPtr userdata)
+        private void OnModeChanged(IntPtr hWnd, IntPtr hRgb, ref RGBMODECHANGEDINFO modeChangedInfo, IntPtr userData)
         {
-            var e = new RgbEasyModeChangedEventArgs(hwnd, this, modechangedinfo, userdata);
-            ModeChanged?.Invoke(this, e);
+            lock (_handlerLock)
+            {
+                var e = new RgbEasyModeChangedEventArgs(hWnd, this, modeChangedInfo, userData);
+                ModeChanged?.Invoke(this, e);                
+            }
         }
 
-        private void OnFrameCaptured(IntPtr hwnd, IntPtr hrgb, ref BITMAPINFOHEADER bitmapinfo, IntPtr bitmapbits,
-            IntPtr userdata)
+        private void OnFrameCaptured(IntPtr hWnd, IntPtr hRgb, ref BITMAPINFOHEADER bitmapInfo, IntPtr bitmapBits,
+            IntPtr userData)
         {
-            try
+            lock (_handlerLock)
             {
-                var e = new RgbEasyFrameCapturedEventArgs(hwnd, this, bitmapinfo, bitmapbits, userdata);
+                var e = new RgbEasyFrameCapturedEventArgs(hWnd, this, bitmapInfo, bitmapBits, userData);
                 FrameCaptured?.Invoke(this, e);
 
                 if (e.PreventDefaultHandler)
                     return;
 
-                DefaultFrameCapturedHandler();
+                DefaultFrameCapturedHandler();                
             }
-            catch (Exception exception)
+        }
+
+        private void OnNoSignal(IntPtr hWnd, IntPtr hRgb, IntPtr userData)
+        {
+            lock (_handlerLock)
             {
-                Console.WriteLine(exception);
-                throw;
+                var e = new RgbEasyNoSignalEventArgs(hWnd, this, userData);
+                NoSignal?.Invoke(this, e);
+
+                if (e.PreventDefaultHandler)
+                    return;
+
+                var error = RGB.NoSignal(_handle);
+                if (error != RGBERROR.NO_ERROR)
+                    throw new RgbEasyException(error);
             }
         }
 
-        private void OnNoSignal(IntPtr hwnd, IntPtr hrgb, IntPtr userdata)
+        private void OnInvalidSignal(IntPtr hWnd, IntPtr hRgb, uint horClock, uint verClock, IntPtr userData)
         {
-            var e = new RgbEasyNoSignalEventArgs(hwnd, this, userdata);
-            NoSignal?.Invoke(this, e);
+            lock (_handlerLock)
+            {
+                var e = new RgbEasyInvalidSignalEventArgs(hWnd, this, (int) horClock, (int) verClock, userData);
+                InvalidSignal?.Invoke(this, e);
 
-            if (e.PreventDefaultHandler)
-                return;
+                if (e.PreventDefaultHandler)
+                    return;
 
-            var error = RGB.NoSignal(_handle);
-            if (error != RGBERROR.NO_ERROR)
-                throw new RgbEasyException(error);
+                var error = RGB.InvalidSignal(_handle, horClock, verClock);
+                if (error != RGBERROR.NO_ERROR)
+                    throw new RgbEasyException(error);
+            }
         }
 
-        private void OnInvalidSignal(IntPtr hwnd, IntPtr hrgb, uint horClock, uint verClock, IntPtr userdata)
-        {
-            var e = new RgbEasyInvalidSignalEventArgs(hwnd, this, (int) horClock, (int) verClock, userdata);
-            InvalidSignal?.Invoke(this, e);
-
-            if (e.PreventDefaultHandler)
-                return;
-
-            var error = RGB.InvalidSignal(_handle, horClock, verClock);
-            if (error != RGBERROR.NO_ERROR)
-                throw new RgbEasyException(error);
-        }
-
-        private void OnValueChanged(IntPtr hWnd, IntPtr hRGB, ref RGBVALUECHANGEDINFO valueChangedInfo,
+        private void OnValueChanged(IntPtr hWnd, IntPtr hRgb, ref RGBVALUECHANGEDINFO valueChangedInfo,
             IntPtr userData)
         {
-            var e = new RgbEasyValueChangedEventArgs(hWnd, this, valueChangedInfo, userData);
-            ValueChanged?.Invoke(this, e);
+            lock (_handlerLock)
+            {
+                var e = new RgbEasyValueChangedEventArgs(hWnd, this, valueChangedInfo, userData);
+                ValueChanged?.Invoke(this, e);
+            }
         }
 
         private void AssertNotDisposed()
