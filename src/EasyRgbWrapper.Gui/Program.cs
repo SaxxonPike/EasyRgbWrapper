@@ -16,6 +16,7 @@ namespace EasyRgbWrapper.Gui
         [STAThread]
         private static void Main(string[] args)
         {
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             BuildContainer().Resolve<IApp>().Start(args);
         }
 
