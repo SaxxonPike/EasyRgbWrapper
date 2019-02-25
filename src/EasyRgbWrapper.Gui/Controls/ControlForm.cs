@@ -34,7 +34,10 @@ namespace EasyRgbWrapper.Gui.Controls
             {
                 if (IsDisposed)
                     return;
-                _editControl.SelectedObject = value;
+                _editControl.Invoke(new Action(() =>
+                {
+                    _editControl.SelectedObject = value;
+                }));
             }
         }
 

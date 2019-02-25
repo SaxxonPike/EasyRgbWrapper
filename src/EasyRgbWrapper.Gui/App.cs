@@ -32,7 +32,6 @@ namespace EasyRgbWrapper.Gui
                     
                     var capture = input.OpenCapture();
                     capture.ModeChanged += CaptureOnModeChanged;
-                    capture.EnableModeChangedEvent = true;
                     form.Text = $"ligma input {capture.Input}";
                     form.PerformLayout();
                     form.Visible = true;

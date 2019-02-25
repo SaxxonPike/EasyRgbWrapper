@@ -8,14 +8,9 @@ namespace EasyRgbWrapper.Lib
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class RgbEasyCapture : IRgbEasyCapture
     {
-        public event EventHandler<RgbEasyFrameCapturedEventArgs> FrameCaptured;
-        public event EventHandler<RgbEasyModeChangedEventArgs> ModeChanged;
-        public event EventHandler<RgbEasyNoSignalEventArgs> NoSignal;
-        public event EventHandler<RgbEasyInvalidSignalEventArgs> InvalidSignal;
-        public event EventHandler<RgbEasyValueChangedEventArgs> ValueChanged;
+        private readonly IntPtr _handle;
 
         private readonly int _inputIndex;
-        private readonly IntPtr _handle;
         private bool _disposed;
 
         internal RgbEasyCapture(int inputIndex)
@@ -29,145 +24,40 @@ namespace EasyRgbWrapper.Lib
             if (error != RGBERROR.NO_ERROR)
                 throw new RgbEasyException(error);
 
+            error = RGB.SetModeChangedFn(handle, OnModeChanged, IntPtr.Zero);
+            if (error != RGBERROR.NO_ERROR)
+                throw new RgbEasyException(error);
+
+            error = RGB.SetFrameCapturedFn(handle, OnFrameCaptured, IntPtr.Zero);
+            if (error != RGBERROR.NO_ERROR)
+                throw new RgbEasyException(error);
+
+            error = RGB.SetInvalidSignalFn(handle, OnInvalidSignal, IntPtr.Zero);
+            if (error != RGBERROR.NO_ERROR)
+                throw new RgbEasyException(error);
+
+            error = RGB.SetNoSignalFn(handle, OnNoSignal, IntPtr.Zero);
+            if (error != RGBERROR.NO_ERROR)
+                throw new RgbEasyException(error);
+
+            error = RGB.SetValueChangedFn(handle, OnValueChanged, IntPtr.Zero);
+            if (error != RGBERROR.NO_ERROR)
+                throw new RgbEasyException(error);
+
             _handle = handle;
         }
 
-        ~RgbEasyCapture()
+        public event EventHandler<RgbEasyFrameCapturedEventArgs> FrameCaptured;
+        public event EventHandler<RgbEasyModeChangedEventArgs> ModeChanged;
+        public event EventHandler<RgbEasyNoSignalEventArgs> NoSignal;
+        public event EventHandler<RgbEasyInvalidSignalEventArgs> InvalidSignal;
+        public event EventHandler<RgbEasyValueChangedEventArgs> ValueChanged;
+
+        public void DefaultFrameCapturedHandler()
         {
-            Dispose();
-        }
-
-        /// <summary>
-        /// Handles unrecoverable errors from RGBEasy. Per the docs:
-        /// It is the applications responsibility to close the capture using RGBCloseInput when the Error
-        /// callback function is executed.
-        /// </summary>
-        private void HandleUnrecoverableError(IntPtr hwnd, IntPtr hrgb, uint error, IntPtr userdata,
-            ref IntPtr reserved)
-        {
-            try
-            {
-                throw new RgbEasyException((RGBERROR) error);
-            }
-            finally
-            {
-                Dispose();
-            }
-        }
-
-        private void OnModeChanged(IntPtr hwnd, IntPtr hrgb, ref RGBMODECHANGEDINFO modechangedinfo, IntPtr userdata) =>
-            ModeChanged?.Invoke(this,
-                new RgbEasyModeChangedEventArgs(hwnd, this, modechangedinfo, userdata));
-
-        private void OnFrameCaptured(IntPtr hwnd, IntPtr hrgb, ref BITMAPINFOHEADER bitmapinfo, IntPtr bitmapbits,
-            IntPtr userdata)
-        {
-            var e = new RgbEasyFrameCapturedEventArgs(hwnd, this, bitmapinfo, bitmapbits, userdata);
-            FrameCaptured?.Invoke(this, e);
-
-            if (e.PreventDefaultHandler)
-                return;
-
             var error = RGB.DrawFrame(_handle);
             if (error != RGBERROR.NO_ERROR)
                 throw new RgbEasyException(error);
-        }
-
-        private void OnNoSignal(IntPtr hwnd, IntPtr hrgb, IntPtr userdata)
-        {
-            var e = new RgbEasyNoSignalEventArgs(hwnd, this, userdata);
-            NoSignal?.Invoke(this, e);
-
-            if (e.PreventDefaultHandler)
-                return;
-
-            var error = RGB.NoSignal(_handle);
-            if (error != RGBERROR.NO_ERROR)
-                throw new RgbEasyException(error);
-        }
-
-        private void OnInvalidSignal(IntPtr hwnd, IntPtr hrgb, uint horClock, uint verClock, IntPtr userdata)
-        {
-            var e = new RgbEasyInvalidSignalEventArgs(hwnd, this, (int) horClock, (int) verClock, userdata);
-            InvalidSignal?.Invoke(this, e);
-
-            if (e.PreventDefaultHandler)
-                return;
-
-            var error = RGB.InvalidSignal(_handle, horClock, verClock);
-            if (error != RGBERROR.NO_ERROR)
-                throw new RgbEasyException(error);
-        }
-
-        private void OnValueChanged(IntPtr hWnd, IntPtr hRGB, ref RGBVALUECHANGEDINFO valueChangedInfo,
-            IntPtr userData)
-        {
-            var e = new RgbEasyValueChangedEventArgs(hWnd, this, valueChangedInfo, userData);
-            ValueChanged?.Invoke(this, e);
-        }
-
-        private void AssertNotDisposed()
-        {
-            if (_disposed)
-                throw new Exception("A disposed capture cannot be used.");
-        }
-
-        public bool EnableFrameCapturedEvent
-        {
-            set
-            {
-                AssertNotDisposed();
-                var error = RGB.SetFrameCapturedFn(_handle, value ? OnFrameCaptured : (RGBFRAMECAPTUREDFN) null,
-                    IntPtr.Zero);
-                if (error != RGBERROR.NO_ERROR)
-                    throw new RgbEasyException(error);
-            }
-        }
-
-        public bool EnableModeChangedEvent
-        {
-            set
-            {
-                AssertNotDisposed();
-                var error = RGB.SetModeChangedFn(_handle, value ? OnModeChanged : (RGBMODECHANGEDFN) null, IntPtr.Zero);
-                if (error != RGBERROR.NO_ERROR)
-                    throw new RgbEasyException(error);
-            }
-        }
-
-        public bool EnableValueChangedEvent
-        {
-            set
-            {
-                AssertNotDisposed();
-                var error = RGB.SetValueChangedFn(_handle, value ? OnValueChanged : (RGBVALUECHANGEDFN) null,
-                    IntPtr.Zero);
-                if (error != RGBERROR.NO_ERROR)
-                    throw new RgbEasyException(error);
-            }
-        }
-
-        public bool EnableNoSignalEvent
-        {
-            set
-            {
-                AssertNotDisposed();
-                var error = RGB.SetNoSignalFn(_handle, value ? OnNoSignal : (RGBNOSIGNALFN) null, IntPtr.Zero);
-                if (error != RGBERROR.NO_ERROR)
-                    throw new RgbEasyException(error);
-            }
-        }
-
-        public bool EnableInvalidSignalEvent
-        {
-            set
-            {
-                AssertNotDisposed();
-                var error = RGB.SetInvalidSignalFn(_handle, value ? OnInvalidSignal : (RGBINVALIDSIGNALFN) null,
-                    IntPtr.Zero);
-                if (error != RGBERROR.NO_ERROR)
-                    throw new RgbEasyException(error);
-            }
         }
 
         public int HorizontalScaleMinimum
@@ -1064,10 +954,11 @@ namespace EasyRgbWrapper.Lib
         }
 
         /// <summary>
-        /// TODO:
-        /// Document this better -
-        /// Use negative values to disable messages
+        ///     TODO:
+        ///     Document this better -
+        ///     Use negative values to disable messages
         /// </summary>
+
         public int MessageDelay
         {
             get
@@ -1303,7 +1194,97 @@ namespace EasyRgbWrapper.Lib
             }
         }
 
-        public override string ToString() =>
-            $"Input Capture {_inputIndex}";
+        ~RgbEasyCapture()
+        {
+            Dispose();
+        }
+
+        /// <summary>
+        ///     Handles unrecoverable errors from RGBEasy. Per the docs:
+        ///     It is the applications responsibility to close the capture using RGBCloseInput when the Error
+        ///     callback function is executed.
+        /// </summary>
+        private void HandleUnrecoverableError(IntPtr hwnd, IntPtr hrgb, uint error, IntPtr userdata,
+            ref IntPtr reserved)
+        {
+            try
+            {
+                throw new RgbEasyException((RGBERROR) error);
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
+
+        private void OnModeChanged(IntPtr hwnd, IntPtr hrgb, ref RGBMODECHANGEDINFO modechangedinfo, IntPtr userdata)
+        {
+            var e = new RgbEasyModeChangedEventArgs(hwnd, this, modechangedinfo, userdata);
+            ModeChanged?.Invoke(this, e);
+        }
+
+        private void OnFrameCaptured(IntPtr hwnd, IntPtr hrgb, ref BITMAPINFOHEADER bitmapinfo, IntPtr bitmapbits,
+            IntPtr userdata)
+        {
+            try
+            {
+                var e = new RgbEasyFrameCapturedEventArgs(hwnd, this, bitmapinfo, bitmapbits, userdata);
+                FrameCaptured?.Invoke(this, e);
+
+                if (e.PreventDefaultHandler)
+                    return;
+
+                DefaultFrameCapturedHandler();
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
+        }
+
+        private void OnNoSignal(IntPtr hwnd, IntPtr hrgb, IntPtr userdata)
+        {
+            var e = new RgbEasyNoSignalEventArgs(hwnd, this, userdata);
+            NoSignal?.Invoke(this, e);
+
+            if (e.PreventDefaultHandler)
+                return;
+
+            var error = RGB.NoSignal(_handle);
+            if (error != RGBERROR.NO_ERROR)
+                throw new RgbEasyException(error);
+        }
+
+        private void OnInvalidSignal(IntPtr hwnd, IntPtr hrgb, uint horClock, uint verClock, IntPtr userdata)
+        {
+            var e = new RgbEasyInvalidSignalEventArgs(hwnd, this, (int) horClock, (int) verClock, userdata);
+            InvalidSignal?.Invoke(this, e);
+
+            if (e.PreventDefaultHandler)
+                return;
+
+            var error = RGB.InvalidSignal(_handle, horClock, verClock);
+            if (error != RGBERROR.NO_ERROR)
+                throw new RgbEasyException(error);
+        }
+
+        private void OnValueChanged(IntPtr hWnd, IntPtr hRGB, ref RGBVALUECHANGEDINFO valueChangedInfo,
+            IntPtr userData)
+        {
+            var e = new RgbEasyValueChangedEventArgs(hWnd, this, valueChangedInfo, userData);
+            ValueChanged?.Invoke(this, e);
+        }
+
+        private void AssertNotDisposed()
+        {
+            if (_disposed)
+                throw new Exception("A disposed capture cannot be used.");
+        }
+
+        public override string ToString()
+        {
+            return $"Input Capture {_inputIndex}";
+        }
     }
 }

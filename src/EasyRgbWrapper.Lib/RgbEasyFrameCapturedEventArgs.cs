@@ -25,6 +25,10 @@ namespace EasyRgbWrapper.Lib
         public BITMAPINFOHEADER BitmapInfo { get; }
         public IntPtr BitmapBits { get; }
         public IntPtr UserData { get; }
+        
+        /// <summary>
+        /// If False, the default Frame Captured handler will be executed after the event is concluded. 
+        /// </summary>
         public bool PreventDefaultHandler { get; set; }
 
         public Bitmap GetFrame()

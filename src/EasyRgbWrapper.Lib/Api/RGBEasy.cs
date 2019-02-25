@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 // // ReSharper disable All
 
@@ -888,7 +889,11 @@ namespace Datapath.RGBEasy
 
       public static RGBERROR GetModeInfo(IntPtr hRGB, out RGBMODEINFO modeInfo)
       {
-         return NativeMethods.RGBGetModeInfo(hRGB, out modeInfo);
+         modeInfo = new RGBMODEINFO
+         {
+            Size = 32
+         };
+         return NativeMethods.RGBGetModeInfo(hRGB, ref modeInfo);
       }
 
       public static RGBERROR SetOutputSize(IntPtr hRGB, uint width, uint height)
@@ -1506,7 +1511,7 @@ namespace Datapath.RGBEasy
       internal static extern RGBERROR RGBSetColourBalance(IntPtr hRGB, int brightnessRed, int brightnessGreen, int brightnessBlue, int contrastRed, int contrastGreen, int contrastBlue);
 
       [DllImport("rgbeasy.dll", CharSet = CharSet.Auto)]
-      internal static extern RGBERROR RGBGetModeInfo(IntPtr hRGB, out RGBMODEINFO modeInfo);
+      internal static extern RGBERROR RGBGetModeInfo(IntPtr hRGB, [In, Out] ref RGBMODEINFO modeInfo);
 
       [DllImport("rgbeasy.dll", CharSet = CharSet.Auto)]
       internal static extern RGBERROR RGBSetOutputSize(IntPtr hRGB, uint width, uint Height);
