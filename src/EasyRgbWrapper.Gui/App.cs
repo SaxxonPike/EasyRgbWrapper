@@ -40,7 +40,7 @@ namespace EasyRgbWrapper.Gui
 
                     var capture = input.OpenCapture();
                     capture.ModeChanged += CaptureOnModeChanged;
-                    form.Text = $"ligma input {capture.Input}";
+                    form.Text = $"Vision - {capture.Input + 1}";
                     form.PerformLayout();
                     form.Visible = true;
                     UpdateFormGeometry(form, capture);
