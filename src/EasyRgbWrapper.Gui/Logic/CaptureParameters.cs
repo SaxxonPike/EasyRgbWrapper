@@ -21,6 +21,7 @@ namespace EasyRgbWrapper.Gui.Logic
         public int? Phase { get; set; }
         public int? Width { get; set; }
         public int? Height { get; set; }
+        public int? Scale { get; set; }
         public PIXELFORMAT? PixelFormat { get; set; } 
     }
 }

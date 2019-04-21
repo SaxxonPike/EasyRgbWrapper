@@ -9,5 +9,6 @@ namespace EasyRgbWrapper.Gui.Controls
         
         object Subject { get; set; }
         Form Form { get; }
+        void Update();
     }
 }

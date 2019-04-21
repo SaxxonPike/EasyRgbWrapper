@@ -15,7 +15,7 @@ namespace EasyRgbWrapper.Gui.Logic
             _parameters.AddRange(parameters);
         }
 
-        public void Switch(IRgbEasyCapture capture, int lines, int vRate, int hRate)
+        public CaptureParameters Switch(IRgbEasyCapture capture, int lines, int vRate, int hRate)
         {
             foreach (var parameters in _parameters)
             {
@@ -46,10 +46,17 @@ namespace EasyRgbWrapper.Gui.Logic
                         capture.VerticalPositionDefault);
                     
                     capture.PixelFormat = parameters.PixelFormat ?? PIXELFORMAT.RGB888;
-                    
-                    return;
+
+                    return parameters;
                 }
             }
+            
+            return new CaptureParameters
+            {
+                Lines = lines,
+                VRate = vRate,
+                HRate = hRate
+            };
         }
 
         private int GetValue(int? value, int minimum, int maximum, int def)

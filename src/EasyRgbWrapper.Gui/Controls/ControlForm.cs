@@ -8,9 +8,9 @@ namespace EasyRgbWrapper.Gui.Controls
         private readonly PropertyGrid _editControl;
         private readonly ToolStrip _toolStrip;
         private readonly ToolStripButton _saveButton;
-        
+
         public event EventHandler SaveClicked;
-        
+
         private bool _disposed;
 
         public ControlForm()
@@ -19,20 +19,21 @@ namespace EasyRgbWrapper.Gui.Controls
             {
                 FormBorderStyle = FormBorderStyle.Sizable
             };
-            
+
             _editControl = new PropertyGrid {Dock = DockStyle.Fill};
             _toolStrip = new ToolStrip();
             _saveButton = new ToolStripButton {Text = "Save"};
             _saveButton.Click += (sender, e) => SaveClicked?.Invoke(sender, e);
             _toolStrip.Items.Add(_saveButton);
-            
+
             Form.Controls.Add(_toolStrip);
             Form.Controls.Add(_editControl);
+            Form.TopMost = true;
 
             Form.Closed += (sender, args) => Application.Exit();
         }
 
-        private bool IsDisposed 
+        private bool IsDisposed
             => _disposed || _editControl.IsDisposed;
 
         public object Subject
@@ -47,14 +48,16 @@ namespace EasyRgbWrapper.Gui.Controls
             {
                 if (IsDisposed)
                     return;
-                _editControl.BeginInvoke(new Action(() =>
-                {
-                    _editControl.SelectedObject = value;
-                }));
+                _editControl.BeginInvoke(new Action(() => { _editControl.SelectedObject = value; }));
             }
         }
 
         public Form Form { get; }
+
+        public void Update()
+        {
+            _editControl.BeginInvoke(new Action(() => _editControl.Refresh()));
+        }
 
         public void Dispose()
         {

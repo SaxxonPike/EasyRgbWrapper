@@ -36,6 +36,8 @@ namespace EasyRgbWrapper.Lib
             SetModeChangedHandler(OnModeChanged);
             SetInvalidSignalHandler(OnInvalidSignal);
             SetNoSignalHandler(OnNoSignal);
+            SetFrameCapturedHandler(OnFrameCaptured);
+            SetValueChangedHandler(OnValueChanged);
         }
 
         public event EventHandler<RgbEasyFrameCapturedEventArgs> FrameCaptured;

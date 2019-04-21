@@ -16,107 +16,69 @@ namespace EasyRgbWrapper.Gui
         private readonly IRgbEasyContext _context;
         private readonly ICaptureSwitcher _captureSwitcher;
         private readonly ISettingsService _settingsService;
+        private readonly IFormService _formService;
 
-        public App(IRgbEasyContext context, ICaptureSwitcher captureSwitcher, ISettingsService settingsService)
+        public App(IRgbEasyContext context, ICaptureSwitcher captureSwitcher, ISettingsService settingsService, IFormService formService)
         {
             _context = context;
             _captureSwitcher = captureSwitcher;
             _settingsService = settingsService;
+            _formService = formService;
         }
 
         public void Start(string[] args)
         {
-            using (var formService = new FormService())
+            var inputs = _context.Inputs.ToList();
+            var captures = new List<IRgbEasyCapture>();
+            var controlForm = _formService.CreateControlForm();
+
+            _captureSwitcher.Load(_settingsService.LoadCaptureParameters());
+
+            foreach (var input in inputs)
             {
-                var inputs = _context.Inputs.ToList();
-                var captures = new List<IRgbEasyCapture>();
-                var controlForm = formService.CreateControlForm();
+                var capture = input.OpenCapture();
+                var form = _formService.CreateCaptureForm(controlForm, capture);
+                captures.Add(capture);
+                form.GotFocus += (sender, eventArgs) => controlForm.Subject = capture;
+                form.Visible = true;
+                capture.ModeChanged += (sender, eventArgs) => controlForm.Update();
+            }
 
-                _captureSwitcher.Load(_settingsService.LoadCaptureParameters());
-
-                foreach (var input in inputs)
+            controlForm.SaveClicked += (sender, e) =>
+            {
+                var c = (IRgbEasyCapture) controlForm.Subject;
+                var captureForm = _formService.GetCaptureFormForInput(c.Input);
+                var mode = c.ModeInfo;
+                if (mode.State == CAPTURESTATE.CAPTURING)
                 {
-                    var form = formService.CreateCaptureForm();
-
-                    var capture = input.OpenCapture();
-                    capture.ModeChanged += CaptureOnModeChanged;
-                    form.Text = $"Vision - {capture.Input + 1}";
-                    form.PerformLayout();
-                    form.Visible = true;
-                    UpdateFormGeometry(form, capture);
-                    capture.Window = form.Handle;
-                    captures.Add(capture);
-
-                    form.GotFocus += (sender, eventArgs) => controlForm.Subject = capture;
-                }
-
-                controlForm.SaveClicked += (sender, e) =>
-                {
-                    var c = (IRgbEasyCapture) controlForm.Subject;
-                    var mode = c.ModeInfo;
-                    if (mode.State == CAPTURESTATE.CAPTURING)
+                    _captureSwitcher.Set(new CaptureParameters
                     {
-                        _captureSwitcher.Set(new CaptureParameters
-                        {
-                            Lines = mode.TotalLines,
-                            HRate = mode.RefreshRate,
-                            VRate = mode.LineRate,
+                        Lines = mode.TotalLines,
+                        HRate = mode.RefreshRate,
+                        VRate = mode.LineRate,
 
-                            Height = c.CaptureHeight,
-                            Width = c.CaptureWidth,
-                            HPos = c.HorizontalPosition,
-                            HScale = c.HorizontalScale,
-                            VPos = c.VerticalPosition,
-                            Phase = c.Phase
-                        });
-                        
-                        _settingsService.SaveCaptureParameters(_captureSwitcher.Save());
-                    }
-                };
+                        Height = c.CaptureHeight,
+                        Width = c.CaptureWidth,
+                        HPos = c.HorizontalPosition,
+                        HScale = c.HorizontalScale,
+                        VPos = c.VerticalPosition,
+                        Phase = c.Phase,
+                        Scale = captureForm.Scale
+                    });
 
-                try
-                {
-                    Application.Run(controlForm.Form);
+                    _settingsService.SaveCaptureParameters(_captureSwitcher.Save());
                 }
-                finally
-                {
-                    foreach (var capture in captures)
-                        capture?.Dispose();
-                }
-            }
-        }
+            };
 
-        private void UpdateFormGeometry(Control control, IRgbEasyCapture capture)
-        {
-            var info = capture.ModeInfo;
-            if (info.State == CAPTURESTATE.CAPTURING)
+            try
             {
-                _captureSwitcher.Switch(capture, info.TotalLines, info.LineRate, info.RefreshRate);
+                Application.Run(controlForm.Form);
             }
-            
-            var height = capture.CaptureHeight;
-
-            if (height < 600)
-                height *= 2;
-
-            var del = new Action(() => { control.ClientSize = new Size(height * 4 / 3, height); });
-
-            if (control.InvokeRequired)
-                control.Invoke(del);
-            else
-                del();
-        }
-
-        private void CaptureOnModeChanged(object sender, RgbEasyModeChangedEventArgs e)
-        {
-            Debug.WriteLine(
-                $"Mode changed: totalLines={e.Info.TotalNumberOfLines} vRate={e.Info.LineRate} hRate={e.Info.RefreshRate}");
-            Debug.WriteLine(
-                $"Capture: hPos={e.Capture.HorizontalPosition} hScale={e.Capture.HorizontalScale} vPos={e.Capture.VerticalPosition}");
-            Debug.WriteLine($"Capture: width={e.Capture.CaptureWidth} height={e.Capture.CaptureHeight}");
-
-            var form = Control.FromHandle(e.Hwnd);
-            UpdateFormGeometry(form, e.Capture);
+            finally
+            {
+                foreach (var capture in captures)
+                    capture?.Dispose();
+            }
         }
     }
 }
