@@ -334,20 +334,28 @@ namespace Datapath.RGBEasy
       public UNSIGNEDVALUE VideoStandard;
    }
 
-   public delegate void RGBFRAMECAPTUREDFN(IntPtr hWnd, IntPtr hRGB, [Out] BITMAPINFOHEADER bitmapInfo, IntPtr bitmapBits, IntPtr userData);
+   [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+   public delegate void RGBFRAMECAPTUREDFN(IntPtr hWnd, IntPtr hRGB, BITMAPINFOHEADER bitmapInfo, IntPtr bitmapBits, IntPtr userData);
 
-   public delegate void RGBMODECHANGEDFN(IntPtr hWnd, IntPtr hRGB, [Out] RGBMODECHANGEDINFO modeChangedInfo, IntPtr userData);
+   [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+   public delegate void RGBMODECHANGEDFN(IntPtr hWnd, IntPtr hRGB, RGBMODECHANGEDINFO modeChangedInfo, IntPtr userData);
 
+   [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
    public delegate void RGBNOSIGNALFN(IntPtr hWnd, IntPtr hRGB, IntPtr userData);
 
+   [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
    public delegate void RGBDRAWNOSIGNALFN(IntPtr hWnd, IntPtr hRGB, IntPtr hDC, IntPtr userData);
 
+   [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
    public delegate void RGBINVALIDSIGNALFN(IntPtr hWnd, IntPtr hRGB, uint horClock, uint verClock, IntPtr userData);
 
+   [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
    public delegate void RGBDRAWINVALIDSIGNALFN(IntPtr hWnd, IntPtr hRGB, IntPtr hDC, uint horClock, uint verClock, IntPtr userData);
 
+   [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
    public delegate void RGBERRORFND(IntPtr hWnd, IntPtr hRGB, uint error, IntPtr userData, ref IntPtr reserved);
 
+   [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
    public delegate void RGBVALUECHANGEDFN(IntPtr hWnd, IntPtr hRGB, ref RGBVALUECHANGEDINFO valueChangedInfo, IntPtr userData);
 
    public class RGB
@@ -377,7 +385,7 @@ namespace Datapath.RGBEasy
          return NativeMethods.RGBGetNumberOfInputs(out NumberOfInputs);
       }
 
-      public static RGBERROR GetInputInfo(uint uInput, [In, Out] ref RGBINPUTINFO inputInfo)
+      public static RGBERROR GetInputInfo(uint uInput, ref RGBINPUTINFO inputInfo)
       {
          return NativeMethods.RGBGetInputInfo(uInput, ref inputInfo);
       }

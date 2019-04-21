@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net461</TargetFrameworks>
+    <TargetFrameworks>net48</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />

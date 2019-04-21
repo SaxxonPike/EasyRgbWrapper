@@ -13,6 +13,14 @@ namespace EasyRgbWrapper.Lib
         private readonly int _inputIndex;
         private bool _disposed;
         private readonly object _handlerLock = new object();
+        
+        // Keep references to these delegates or we will get MDA errors
+        private RGBMODECHANGEDFN _modeChangedHandler;
+        private RGBERRORFND _errorHandler;
+        private RGBINVALIDSIGNALFN _invalidSignalHandler;
+        private RGBNOSIGNALFN _noSignalHandler;
+        private RGBFRAMECAPTUREDFN _frameCapturedHandler;
+        private RGBVALUECHANGEDFN _valueChangedHandler;
 
         internal RgbEasyCapture(int inputIndex)
         {
@@ -21,31 +29,11 @@ namespace EasyRgbWrapper.Lib
             if (error != RGBERROR.NO_ERROR)
                 throw new RgbEasyException(error);
 
-            error = RGB.SetErrorFn(handle, HandleUnrecoverableError, IntPtr.Zero);
-            if (error != RGBERROR.NO_ERROR)
-                throw new RgbEasyException(error);
-
-            error = RGB.SetModeChangedFn(handle, OnModeChanged, IntPtr.Zero);
-            if (error != RGBERROR.NO_ERROR)
-                throw new RgbEasyException(error);
-
-//            error = RGB.SetFrameCapturedFn(handle, OnFrameCaptured, IntPtr.Zero);
-//            if (error != RGBERROR.NO_ERROR)
-//                throw new RgbEasyException(error);
-
-            error = RGB.SetInvalidSignalFn(handle, OnInvalidSignal, IntPtr.Zero);
-            if (error != RGBERROR.NO_ERROR)
-                throw new RgbEasyException(error);
-
-            error = RGB.SetNoSignalFn(handle, OnNoSignal, IntPtr.Zero);
-            if (error != RGBERROR.NO_ERROR)
-                throw new RgbEasyException(error);
-
-//            error = RGB.SetValueChangedFn(handle, OnValueChanged, IntPtr.Zero);
-//            if (error != RGBERROR.NO_ERROR)
-//                throw new RgbEasyException(error);
-
             _handle = handle;
+            SetErrorHandler(HandleUnrecoverableError);
+            SetModeChangedHandler(OnModeChanged);
+            SetInvalidSignalHandler(OnInvalidSignal);
+            SetNoSignalHandler(OnNoSignal);
         }
 
         public event EventHandler<RgbEasyFrameCapturedEventArgs> FrameCaptured;
@@ -53,6 +41,54 @@ namespace EasyRgbWrapper.Lib
         public event EventHandler<RgbEasyNoSignalEventArgs> NoSignal;
         public event EventHandler<RgbEasyInvalidSignalEventArgs> InvalidSignal;
         public event EventHandler<RgbEasyValueChangedEventArgs> ValueChanged;
+
+        private void SetErrorHandler(RGBERRORFND errorHandler)
+        {
+            var error = RGB.SetErrorFn(_handle, errorHandler, IntPtr.Zero);
+            if (error != RGBERROR.NO_ERROR)
+                throw new RgbEasyException(error);
+            _errorHandler = errorHandler;
+        }
+
+        private void SetValueChangedHandler(RGBVALUECHANGEDFN valueChangedHandler)
+        {
+            var error = RGB.SetValueChangedFn(_handle, valueChangedHandler, IntPtr.Zero);
+            if (error != RGBERROR.NO_ERROR)
+                throw new RgbEasyException(error);
+            _valueChangedHandler = valueChangedHandler;
+        }
+
+        private void SetFrameCapturedHandler(RGBFRAMECAPTUREDFN frameCapturedHandler)
+        {
+            var error = RGB.SetFrameCapturedFn(_handle, frameCapturedHandler, IntPtr.Zero);
+            if (error != RGBERROR.NO_ERROR)
+                throw new RgbEasyException(error);
+            _frameCapturedHandler = frameCapturedHandler;
+        }
+
+        private void SetModeChangedHandler(RGBMODECHANGEDFN modeChangedHandler)
+        {
+            var error = RGB.SetModeChangedFn(_handle, modeChangedHandler, IntPtr.Zero);
+            if (error != RGBERROR.NO_ERROR)
+                throw new RgbEasyException(error);
+            _modeChangedHandler = modeChangedHandler;
+        }
+
+        private void SetInvalidSignalHandler(RGBINVALIDSIGNALFN invalidSignalHandler)
+        {
+            var error = RGB.SetInvalidSignalFn(_handle, invalidSignalHandler, IntPtr.Zero);
+            if (error != RGBERROR.NO_ERROR)
+                throw new RgbEasyException(error);
+            _invalidSignalHandler = invalidSignalHandler;
+        }
+
+        private void SetNoSignalHandler(RGBNOSIGNALFN noSignalHandler)
+        {
+            var error = RGB.SetNoSignalFn(_handle, noSignalHandler, IntPtr.Zero);
+            if (error != RGBERROR.NO_ERROR)
+                throw new RgbEasyException(error);
+            _noSignalHandler = noSignalHandler;
+        }
 
         public void DefaultFrameCapturedHandler()
         {
