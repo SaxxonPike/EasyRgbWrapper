@@ -15,12 +15,14 @@ namespace EasyRgbWrapper.Lib
         private readonly object _handlerLock = new object();
         
         // Keep references to these delegates or we will get MDA errors
+        // ReSharper disable NotAccessedField.Local
         private RGBMODECHANGEDFN _modeChangedHandler;
         private RGBERRORFND _errorHandler;
         private RGBINVALIDSIGNALFN _invalidSignalHandler;
         private RGBNOSIGNALFN _noSignalHandler;
         private RGBFRAMECAPTUREDFN _frameCapturedHandler;
         private RGBVALUECHANGEDFN _valueChangedHandler;
+        // ReSharper restore NotAccessedField.Local
 
         internal RgbEasyCapture(int inputIndex)
         {
