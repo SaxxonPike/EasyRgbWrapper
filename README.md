@@ -30,6 +30,8 @@ Saved settings are stored in `capture.json`.
 
 ## EasyRgbWrapper.Lib
 
+**Requires [.NET Framework 4.8 or .NET Core 2.2](https://dotnet.microsoft.com/download)**
+
 The meat of the project. This is actually a wrapper *for* the wrapper provided by Datapath. It provides sturctured exception handling
 and proper Dispose patterns in case something goes wrong.
 
