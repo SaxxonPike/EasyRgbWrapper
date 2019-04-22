@@ -4,6 +4,8 @@ This expands on the RGBEasy API that is provided by Datapath, for use with suppo
 
 ## EasyRgbWrapper.Gui
 
+**Requires [.NET Framework 4.8](https://dotnet.microsoft.com/download)**
+
 A GUI utility for saving, auto-recalling (based on input display parameters such as resolution and refresh), and displaying Datapath
 capture parameters. Currently it is locked to a 4:3 display ratio - this should be customizable in a future release.
 
