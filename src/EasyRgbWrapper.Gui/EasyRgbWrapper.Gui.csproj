@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net48</TargetFrameworks>
-    <OutputType>exe</OutputType>
+    <OutputType>winexe</OutputType>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
