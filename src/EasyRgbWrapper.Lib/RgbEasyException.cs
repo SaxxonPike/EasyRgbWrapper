@@ -5,8 +5,11 @@ namespace EasyRgbWrapper.Lib
 {
     public class RgbEasyException : Exception
     {
-        public RgbEasyException(RGBERROR error) : base($"An RGBEasy error occurred: {error}")
+        public RGBERROR RgbError { get; }
+
+        public RgbEasyException(RGBERROR rgbError) : base($"An RGBEasy error occurred: {rgbError}")
         {
+            RgbError = rgbError;
         }
 
         public RgbEasyException(string message) : base(message)
