@@ -25,7 +25,7 @@ namespace EasyRgbWrapper.Gui.Controls
             _captureSwitcher = captureSwitcher;
             Form = new Form
             {
-                FormBorderStyle = FormBorderStyle.FixedToolWindow
+                FormBorderStyle = FormBorderStyle.FixedSingle
             };
 
             Form.FormClosing += FormOnFormClosing;
