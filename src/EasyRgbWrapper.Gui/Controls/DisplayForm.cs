@@ -1,6 +1,9 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Windows.Forms;
 using Datapath.RGBEasy;
 using EasyRgbWrapper.Gui.Logic;
@@ -13,16 +16,19 @@ namespace EasyRgbWrapper.Gui.Controls
         private readonly Form _parentForm;
         private readonly IRgbEasyCapture _capture;
         private readonly ICaptureSwitcher _captureSwitcher;
+        private readonly IDialogFactory _dialogFactory;
         private int _scale = 1;
 
         public event KeyEventHandler KeyDown;
         public event EventHandler GotFocus;
-
-        public DisplayForm(Form parentForm, IRgbEasyCapture capture, ICaptureSwitcher captureSwitcher)
+        
+        public DisplayForm(Form parentForm, IRgbEasyCapture capture, ICaptureSwitcher captureSwitcher,
+            IDialogFactory dialogFactory)
         {
             _parentForm = parentForm;
             _capture = capture;
             _captureSwitcher = captureSwitcher;
+            _dialogFactory = dialogFactory;
             Form = new Form
             {
                 FormBorderStyle = FormBorderStyle.FixedSingle
@@ -32,10 +38,38 @@ namespace EasyRgbWrapper.Gui.Controls
             Form.Shown += FormOnShown;
             Form.GotFocus += FormOnGotFocus;
             Form.KeyDown += FormOnKeyDown;
+            Form.Paint += FormPaint;
+            Form.DoubleClick += FormDoubleClick;
             capture.ModeChanged += CaptureOnModeChanged;
             parentForm.AddOwnedForm(Form);
 
             Form.Text = $"Vision - {capture.Input + 1}";
+        }
+
+        private void FormDoubleClick(object? sender, EventArgs e)
+        {
+            var tempName = Path.GetTempFileName();
+            _capture.Pause();
+            _capture.SaveCurrentFrame(tempName);
+            _capture.Resume();
+            using var bmp = new Bitmap(tempName);
+            var dialog = _dialogFactory.GetSave();
+            dialog.Filters = "PNG files|*.png";
+            dialog.FileName = $"{DateTime.Now:yyyyMMdd-HHmmss}.png";
+            if (dialog.Show() == DialogResult.OK)
+            {
+                bmp.Save(dialog.FileName, ImageFormat.Png);
+            }
+            bmp?.Dispose();
+            File.Delete(tempName);
+        }
+
+        private void FormPaint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+            e.Graphics.SmoothingMode = SmoothingMode.None;
+            e.Graphics.CompositingMode = CompositingMode.SourceCopy;
+            e.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
         }
 
         private void FormOnKeyDown(object sender, KeyEventArgs e)

@@ -9,17 +9,19 @@ namespace EasyRgbWrapper.Gui.Controls
     public class FormService : IFormService
     {
         private readonly ICaptureSwitcher _captureSwitcher;
+        private readonly IDialogFactory _dialogFactory;
         private readonly ISet<IDisposable> _forms = new HashSet<IDisposable>();
         private readonly IDictionary<int, IDisplayForm> _displayFormCaptures = new Dictionary<int, IDisplayForm>();
 
-        public FormService(ICaptureSwitcher captureSwitcher)
+        public FormService(ICaptureSwitcher captureSwitcher, IDialogFactory dialogFactory)
         {
             _captureSwitcher = captureSwitcher;
+            _dialogFactory = dialogFactory;
         }
 
         public IDisplayForm CreateCaptureForm(IControlForm parentForm, IRgbEasyCapture capture)
         {
-            var form = new DisplayForm(parentForm.Form, capture, _captureSwitcher);
+            var form = new DisplayForm(parentForm.Form, capture, _captureSwitcher, _dialogFactory);
             _forms.Add(form);
             _displayFormCaptures[capture.Input] = form;
             return form;
