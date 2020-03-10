@@ -1,9 +1,10 @@
 using Datapath.RGBEasy;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
+
 namespace EasyRgbWrapper.Lib
 {
-    // ReSharper disable MemberCanBePrivate.Global
-    
     public struct RgbEasySignalType
     {
         public RgbEasySignalType(int width, int height, int refreshRate, SIGNALTYPE type)

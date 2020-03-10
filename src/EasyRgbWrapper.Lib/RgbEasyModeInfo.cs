@@ -1,10 +1,11 @@
 using System.ComponentModel;
 using Datapath.RGBEasy;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
+
 namespace EasyRgbWrapper.Lib
 {
-    // ReSharper disable MemberCanBePrivate.Global
-    
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public struct RgbEasyModeInfo
     {

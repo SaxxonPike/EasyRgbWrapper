@@ -1,6 +1,4 @@
 using System;
-using System.Windows.Forms;
-using EasyRgbWrapper.Gui.Logic;
 using EasyRgbWrapper.Lib;
 
 namespace EasyRgbWrapper.Gui.Controls

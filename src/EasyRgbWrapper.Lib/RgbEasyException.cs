@@ -1,6 +1,8 @@
 using System;
 using Datapath.RGBEasy;
 
+// ReSharper disable UnusedMember.Global
+
 namespace EasyRgbWrapper.Lib
 {
     public class RgbEasyException : Exception

@@ -1,3 +1,5 @@
+// ReSharper disable UnusedMember.Global
+
 namespace EasyRgbWrapper.Lib
 {
     public interface IRgbEasyInput

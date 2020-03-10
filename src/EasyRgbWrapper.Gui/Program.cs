@@ -1,12 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using Autofac;
-using Autofac.Core;
-using EasyRgbWrapper.Gui.Controls;
 using EasyRgbWrapper.Lib;
 
 namespace EasyRgbWrapper.Gui
@@ -17,8 +11,8 @@ namespace EasyRgbWrapper.Gui
         private static void Main(string[] args)
         {
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-            using (var container = BuildContainer())
-                container.Resolve<IApp>().Start(args);
+            using var container = BuildContainer();
+            container.Resolve<IApp>().Start(args);
         }
 
         private static IContainer BuildContainer()

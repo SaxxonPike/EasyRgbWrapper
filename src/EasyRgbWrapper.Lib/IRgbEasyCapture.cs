@@ -2,6 +2,9 @@ using System;
 using System.Drawing;
 using Datapath.RGBEasy;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UnusedMemberInSuper.Global
+
 namespace EasyRgbWrapper.Lib
 {
     public interface IRgbEasyCapture : IDisposable

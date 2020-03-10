@@ -1,8 +1,4 @@
 using System;
-using System.Drawing;
-using System.Linq;
-using System.Threading;
-using EasyRgbWrapper.Gui.Controls;
 using EasyRgbWrapper.Lib;
 using NUnit.Framework;
 
@@ -14,20 +10,19 @@ namespace EasyRgbWrapper.Test
         [Test]
         public void Test1()
         {
-            using (var context = new RgbEasyContext())
-            {
-                var inputs = context.Inputs;
+            using var context = new RgbEasyContext();
 
-                foreach (var input in inputs)
-                {
-                    Console.WriteLine($"{input.Number} " +
-                                      $"VGA={input.IsVgaSupported} " +
-                                      $"Component={input.IsComponentSupported} " +
-                                      $"Composite={input.IsCompositeSupported} " +
-                                      $"DVI={input.IsDviSupported} " +
-                                      $"Svideo={input.IsSvideoSupported} " +
-                                      $"Signal={input.Signal.Type}");
-                }
+            var inputs = context.Inputs;
+
+            foreach (var input in inputs)
+            {
+                Console.WriteLine($"{input.Number} " +
+                                  $"VGA={input.IsVgaSupported} " +
+                                  $"Component={input.IsComponentSupported} " +
+                                  $"Composite={input.IsCompositeSupported} " +
+                                  $"DVI={input.IsDviSupported} " +
+                                  $"Svideo={input.IsSvideoSupported} " +
+                                  $"Signal={input.Signal.Type}");
             }
         }
     }

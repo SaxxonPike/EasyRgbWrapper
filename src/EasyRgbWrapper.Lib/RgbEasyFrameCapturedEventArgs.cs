@@ -1,13 +1,13 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 using Datapath.RGBEasy;
+
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace EasyRgbWrapper.Lib
 {
-    // ReSharper disable MemberCanBePrivate.Global
-    
     public class RgbEasyFrameCapturedEventArgs : EventArgs
     {
         public RgbEasyFrameCapturedEventArgs(IntPtr hwnd, IRgbEasyCapture capture, BITMAPINFOHEADER bitmapInfo, IntPtr bitmapBits,

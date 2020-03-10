@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Linq;
 using Datapath.RGBEasy;
 
+// ReSharper disable UnusedMember.Global
+
 namespace EasyRgbWrapper.Lib
 {
     [TypeConverter(typeof(ExpandableObjectConverter))]

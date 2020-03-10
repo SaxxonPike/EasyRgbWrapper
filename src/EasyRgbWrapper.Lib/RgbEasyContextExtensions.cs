@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Datapath.RGBEasy;
 
+// ReSharper disable UnusedMember.Global
+
 namespace EasyRgbWrapper.Lib
 {
     public static class RgbEasyContextExtensions

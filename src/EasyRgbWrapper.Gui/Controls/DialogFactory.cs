@@ -1,5 +1,3 @@
-using System;
-
 namespace EasyRgbWrapper.Gui.Controls
 {
     public class DialogFactory : IDialogFactory

@@ -1,10 +1,11 @@
 using System;
 using Datapath.RGBEasy;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
+
 namespace EasyRgbWrapper.Lib
 {
-    // ReSharper disable MemberCanBePrivate.Global
-
     public class RgbEasyValueChangedEventArgs : EventArgs
     {
         public RgbEasyValueChangedEventArgs(IntPtr hwnd, IRgbEasyCapture capture, RGBVALUECHANGEDINFO info,

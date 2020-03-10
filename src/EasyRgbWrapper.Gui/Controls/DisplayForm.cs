@@ -157,6 +157,7 @@ namespace EasyRgbWrapper.Gui.Controls
         private void FormOnShown(object sender, EventArgs e)
         {
             Form.PerformLayout();
+            Form.Location = new Point(0, 0);
             Form.Visible = true;
             UpdateFormGeometry(true);
             _capture.Window = Form.Handle;

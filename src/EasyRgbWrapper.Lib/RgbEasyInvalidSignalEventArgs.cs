@@ -1,8 +1,10 @@
 using System;
 
+// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
+
 namespace EasyRgbWrapper.Lib
 {
-    // ReSharper disable MemberCanBePrivate.Global
 
     public class RgbEasyInvalidSignalEventArgs : EventArgs
     {

@@ -1,7 +1,20 @@
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
-// // ReSharper disable All
+
+#pragma warning disable 414
+
+// ReSharper disable FieldCanBeMadeReadOnly.Global
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable FieldCanBeMadeReadOnly.Local
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnusedMethodReturnValue.Global
+// ReSharper disable StringLiteralTypo
+// ReSharper disable CommentTypo
+// ReSharper disable UnusedType.Global
+// ReSharper disable IdentifierTypo
+// ReSharper disable InconsistentNaming
+// ReSharper disable UnusedMember.Global
+// ReSharper disable CheckNamespace
 
 namespace Datapath.RGBEasy
 {
@@ -284,7 +297,7 @@ namespace Datapath.RGBEasy
 
       public uint ToUint()
       {
-         return (uint)blue << 16 | (uint)green << 8 | (uint)red;
+         return (uint)blue << 16 | (uint)green << 8 | red;
       }
    }
 
