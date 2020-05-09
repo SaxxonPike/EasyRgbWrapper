@@ -23,5 +23,7 @@ namespace EasyRgbWrapper.Gui.Logic
         public int? Height { get; set; }
         public int? Scale { get; set; }
         public PIXELFORMAT? PixelFormat { get; set; } 
+        public int? Brightness { get; set; }
+        public int? Contrast { get; set; }
     }
 }

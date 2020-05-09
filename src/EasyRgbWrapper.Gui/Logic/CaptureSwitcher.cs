@@ -46,6 +46,9 @@ namespace EasyRgbWrapper.Gui.Logic
                     
                     capture.PixelFormat = parameters.PixelFormat ?? PIXELFORMAT.RGB888;
 
+                    capture.Brightness = parameters.Brightness ?? capture.BrightnessDefault;
+                    capture.Contrast = parameters.Contrast ?? capture.ContrastDefault;
+
                     return parameters;
                 }
             }

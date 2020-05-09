@@ -60,7 +60,9 @@ namespace EasyRgbWrapper.Gui
                         HScale = c.HorizontalScale,
                         VPos = c.VerticalPosition,
                         Phase = c.Phase,
-                        Scale = captureForm.Scale
+                        Scale = captureForm.Scale,
+                        Brightness = c.Brightness,
+                        Contrast = c.Contrast
                     });
 
                     _settingsService.SaveCaptureParameters(_captureSwitcher.Save());
